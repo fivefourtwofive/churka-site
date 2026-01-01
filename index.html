@@ -3,79 +3,106 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SSO CHURKA | MAIN</title>
+    <title>SSO CHURKA</title>
     <style>
+        /* БАЗОВЫЙ СТИЛЬ */
         body {
             background-color: #050505;
-            color: #dcdcdc;
+            color: #ffffff;
             font-family: 'Courier New', Courier, monospace;
             text-align: center;
             margin: 0;
-            padding: 0;
             height: 100vh;
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            background-image: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
-            background-size: 100% 2px, 3px 100%;
+            overflow: hidden;
+            background: radial-gradient(circle, #1a1a1a 0%, #000000 100%);
         }
+
+        /* ЗАГОЛОВОК С ГЛИТЧЕМ */
         h1 {
-            font-size: 3rem;
+            font-size: 3.5rem;
             color: #ff0000;
-            border: 2px solid #ff0000;
-            padding: 10px 20px;
             text-transform: uppercase;
             letter-spacing: 5px;
-            margin-bottom: 10px;
-            text-shadow: 2px 2px 0px #330000;
+            margin-bottom: 5px;
+            text-shadow: 2px 2px 0px #500000;
+            position: relative;
+            animation: glitch 1s infinite alternate;
         }
+
+        @keyframes glitch {
+            0% { text-shadow: 2px 2px 0px #500000; transform: skew(0deg); }
+            20% { text-shadow: -2px -2px 0px #ff4444; transform: skew(-2deg); }
+            40% { text-shadow: 2px -2px 0px #500000; transform: skew(2deg); }
+            100% { text-shadow: 2px 2px 0px #500000; transform: skew(0deg); }
+        }
+
         p.subtitle {
             font-size: 1.2rem;
-            color: #888;
-            margin-bottom: 40px;
-        }
-        .warning {
-            color: yellow;
-            border-top: 1px solid yellow;
-            border-bottom: 1px solid yellow;
-            padding: 10px;
+            color: #666;
             margin-bottom: 50px;
+            border-bottom: 1px solid #333;
+            padding-bottom: 10px;
+            display: inline-block;
+        }
+
+        /* ТАБЛИЧКА С ПРЕДУПРЕЖДЕНИЕМ */
+        .warning {
+            background: rgba(255, 255, 0, 0.1);
+            color: yellow;
+            border: 2px solid yellow;
+            padding: 15px 30px;
+            margin-bottom: 60px;
             font-weight: bold;
             letter-spacing: 2px;
+            box-shadow: 0 0 15px rgba(255, 255, 0, 0.3);
+            animation: pulse 2s infinite;
         }
+
+        @keyframes pulse {
+            0% { box-shadow: 0 0 10px rgba(255, 255, 0, 0.2); }
+            50% { box-shadow: 0 0 25px rgba(255, 255, 0, 0.6); }
+            100% { box-shadow: 0 0 10px rgba(255, 255, 0, 0.2); }
+        }
+
+        /* КНОПКА ВХОДА */
         .btn {
-            background-color: #000;
+            background-color: transparent;
             color: #ff0000;
             border: 2px solid #ff0000;
-            padding: 15px 30px;
-            font-size: 1.5rem;
+            padding: 20px 40px;
+            font-size: 1.8rem;
             text-decoration: none;
             font-family: 'Courier New', Courier, monospace;
-            font-weight: bold;
-            transition: 0.2s;
+            font-weight: 900;
+            transition: 0.3s;
             cursor: pointer;
+            text-transform: uppercase;
         }
+
         .btn:hover {
             background-color: #ff0000;
             color: #000;
-            box-shadow: 0 0 15px #ff0000;
+            box-shadow: 0 0 30px #ff0000;
+            transform: scale(1.1);
         }
     </style>
 </head>
 <body>
 
     <h1>ССО "ЧУРКА"</h1>
-    <p class="subtitle">sso "churka"</p>
+    <p class="subtitle">CLASSIFIED</p>
 
     <div class="warning">
          ПЕТУХАМ ВХОД ЗАПРЕЩЕН 
     </div>
 
     <a href="/interpol/" class="btn">
-        [ИНТЕРПОЛ]
+        [ ИНТЕРП0Л ]
     </a>
 
 </body>
 </html>
-
