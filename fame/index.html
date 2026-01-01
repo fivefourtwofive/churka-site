@@ -15,7 +15,7 @@
         }
 
         h1 { 
-            color: #FFD700; /* Золотой */
+            color: #FFD700;
             font-size: 3rem; 
             text-transform: uppercase; 
             border: 2px solid #FFD700;
@@ -34,7 +34,7 @@
             letter-spacing: 2px;
         }
 
-        /* СЕТКА */
+
         .grid-container {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
@@ -43,7 +43,7 @@
             margin: 0 auto;
         }
 
-        /* КАРТОЧКА ЛЕГЕНДЫ */
+
         .card { 
             border: 1px solid #333; 
             background: #111; 
@@ -52,9 +52,9 @@
             position: relative;
         }
 
-        /* АНИМАЦИЯ ЗОЛОТОГО СВЕЧЕНИЯ */
+
         .card:hover {
-            transform: translateY(-10px); /* Взлетает вверх */
+            transform: translateY(-10px); 
             border-color: #FFD700;
             box-shadow: 0 0 30px rgba(255, 215, 0, 0.4);
         }
@@ -65,12 +65,12 @@
             height: 350px; 
             object-fit: cover; 
             border: 1px solid #333;
-            filter: sepia(100%) hue-rotate(5deg) saturate(0.5); /* Эффект старого золота */
+            filter: sepia(100%) hue-rotate(5deg) saturate(0.5); 
             transition: 0.4s;
         }
 
         .card:hover img {
-            filter: none; /* Возвращаем цвета при наведении */
+            filter: none; 
             border-color: #FFD700;
         }
 
@@ -116,34 +116,28 @@
 
     <div class="grid-container">
 
-        <!-- КАРТОЧКА 1 (ТЫ) -->
+
         <div class="card">
-            <!-- Замени ссылку на свою фотку -->
             <img src="https://i.redd.it/why-minos-primes-head-like-french-fries-v0-iycizqovo8eb1.png?width=1080&format=png&auto=webp&s=8d56e8bd29533f26a0f0dbc21bca98ef6a1c95c0" alt="Admin"> 
             <div class="name">5425й</div>
             <div class="rank">Я, Крутой</div>
         </div>
 
-        <!-- КАРТОЧКА 2 (Кент) -->
         <div class="card">
             <img src="https://i.redd.it/gdvvduwlgcic1.jpeg" alt="Kent">
             <div class="name">Сатор</div>
             <div class="rank">мясо для ебли, батя</div>
         </div>
-
-        <!-- КАРТОЧКА 3 -->
         <div class="card">
             <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQG2MPAuut5z7Ym7Gpm_-hg8DblPwVJSpjxRg&s" alt="Kent">
             <div class="name">wster</div>
             <div class="rank">Ветеран 2й войны ССО, адвокат ССО</div>
         </div>
-	
         <div class="card">
             <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRm18N6wHjHrULRF2dV1hfgJ_AovFQuus3Y1w&s" alt="Kent">
             <div class="name">тигр</div>
             <div class="rank">Ветеран 2й войны ССО, проводник электрик</div>
         </div>
-
         <div class="card">
             <img src="https://i.pinimg.com/736x/72/5d/3d/725d3d735074a37c5e8d50180541c374.jpg" alt="Kent">
             <div class="name">рамлюк</div>
