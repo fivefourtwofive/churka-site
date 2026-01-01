@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ДОСКА ПОЧЕТА</title>
+    <style>
+        body { 
+            background-color: #050505; 
+            color: white; 
+            font-family: 'Courier New', monospace; 
+            text-align: center; 
+            padding: 20px;
+            background-image: radial-gradient(circle at center, #1a1500 0%, #000000 100%);
+        }
+
+        h1 { 
+            color: #FFD700; /* Золотой */
+            font-size: 3rem; 
+            text-transform: uppercase; 
+            border: 2px solid #FFD700;
+            display: inline-block; 
+            padding: 15px 30px; 
+            margin-top: 50px; 
+            letter-spacing: 5px;
+            text-shadow: 0 0 10px #FFD700;
+            box-shadow: 0 0 20px rgba(255, 215, 0, 0.2);
+        }
+
+        .subtitle {
+            color: #888;
+            margin-bottom: 50px;
+            font-size: 14px;
+            letter-spacing: 2px;
+        }
+
+        /* СЕТКА */
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 40px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        /* КАРТОЧКА ЛЕГЕНДЫ */
+        .card { 
+            border: 1px solid #333; 
+            background: #111; 
+            padding: 20px; 
+            transition: all 0.4s ease; 
+            position: relative;
+        }
+
+        /* АНИМАЦИЯ ЗОЛОТОГО СВЕЧЕНИЯ */
+        .card:hover {
+            transform: translateY(-10px); /* Взлетает вверх */
+            border-color: #FFD700;
+            box-shadow: 0 0 30px rgba(255, 215, 0, 0.4);
+        }
+
+        /* ФОТО */
+        .card img { 
+            width: 100%; 
+            height: 350px; 
+            object-fit: cover; 
+            border: 1px solid #333;
+            filter: sepia(100%) hue-rotate(5deg) saturate(0.5); /* Эффект старого золота */
+            transition: 0.4s;
+        }
+
+        .card:hover img {
+            filter: none; /* Возвращаем цвета при наведении */
+            border-color: #FFD700;
+        }
+
+        .name { 
+            font-size: 26px; 
+            color: #fff; 
+            font-weight: 900; 
+            margin-top: 20px; 
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .card:hover .name { color: #FFD700; text-shadow: 0 0 5px #FFD700; }
+
+        .rank { 
+            color: #FFD700; 
+            font-weight: bold; 
+            margin-top: 10px; 
+            font-size: 16px;
+            border-top: 1px solid #333;
+            padding-top: 10px;
+        }
+
+        .back-btn {
+            display: inline-block;
+            margin-bottom: 30px;
+            color: #666;
+            text-decoration: none;
+            border: 1px solid #333;
+            padding: 10px 30px;
+            transition: 0.3s;
+        }
+        .back-btn:hover { background: #FFD700; color: #000; border-color: #FFD700; }
+    </style>
+</head>
+<body>
+
+    <a href="/" class="back-btn">< НАЗАД</a>
+    <br>
+    
+    <h1>ВЕТЕРАНЫ</h1>
+    <p class="subtitle">ОНЛИ СИГМЫ</p>
+
+    <div class="grid-container">
+
+        <!-- КАРТОЧКА 1 (ТЫ) -->
+        <div class="card">
+            <!-- Замени ссылку на свою фотку -->
+            <img src="https://i.redd.it/why-minos-primes-head-like-french-fries-v0-iycizqovo8eb1.png?width=1080&format=png&auto=webp&s=8d56e8bd29533f26a0f0dbc21bca98ef6a1c95c0" alt="Admin"> 
+            <div class="name">5425й</div>
+            <div class="rank">Я, Крутой</div>
+        </div>
+
+        <!-- КАРТОЧКА 2 (Кент) -->
+        <div class="card">
+            <img src="https://i.redd.it/gdvvduwlgcic1.jpeg" alt="Kent">
+            <div class="name">Сатор</div>
+            <div class="rank">мясо для ебли, батя</div>
+        </div>
+
+        <!-- КАРТОЧКА 3 -->
+        <div class="card">
+            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQG2MPAuut5z7Ym7Gpm_-hg8DblPwVJSpjxRg&s" alt="Kent">
+            <div class="name">wster</div>
+            <div class="rank">Ветеран 2й войны ССО, адвокат ССО</div>
+        </div>
+	
+        <div class="card">
+            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRm18N6wHjHrULRF2dV1hfgJ_AovFQuus3Y1w&s" alt="Kent">
+            <div class="name">тигр</div>
+            <div class="rank">Ветеран 2й войны ССО, проводник электрик</div>
+        </div>
+
+        <div class="card">
+            <img src="https://i.pinimg.com/736x/72/5d/3d/725d3d735074a37c5e8d50180541c374.jpg" alt="Kent">
+            <div class="name">рамлюк</div>
+            <div class="rank">Ветеран СВО, признанный электрик проводник</div>
+        </div>
+
+        <div class="card">
+            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRaxyIrr5YF1VF-GHp-t32ZyQdMpSbd5v6gHg&s" alt="Kent">
+            <div class="name">мрфиш</div>
+            <div class="rank">самый первый основатель ССО, он крут</div>
+        </div>
+
+    </div>
+
+</body>
+</html>
