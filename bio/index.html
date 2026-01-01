@@ -174,7 +174,7 @@
             z-index: 10;
             opacity: 0;
             transform: scale(0.9) translateY(30px);
-            transition: all 1.2s cubic-bezier(0.19, 1, 0.22, 1);
+            transition: all 0.6s cubic-bezier(0.19, 1, 0.22, 1);
             padding: 40px 20px;
             position: relative;
         }
@@ -266,6 +266,8 @@
             z-index: -1;
             animation: gradientSpin 4s ease infinite, pulse 2s infinite;
             filter: blur(10px);
+            opacity: 0;
+            transition: opacity 0.4s;
         }
 
         @keyframes gradientSpin {
@@ -300,17 +302,40 @@
             border-color: #43b581 !important; 
             box-shadow: 0 0 40px rgba(67, 181, 129, 0.8), 0 0 80px rgba(67, 181, 129, 0.4);
         }
+
+        .online + .avatar-container::before {
+            opacity: 1 !important;
+            background: linear-gradient(45deg, #43b581, #5cd995, #43b581, #2ea05e, #43b581) !important;
+        }
+
         .idle { 
             border-color: #faa61a !important; 
             box-shadow: 0 0 40px rgba(250, 166, 26, 0.8), 0 0 80px rgba(250, 166, 26, 0.4);
         }
+
+        .idle + .avatar-container::before {
+            opacity: 1 !important;
+            background: linear-gradient(45deg, #faa61a, #ffb84d, #faa61a, #d98c00, #faa61a) !important;
+        }
+
         .dnd { 
             border-color: #f04747 !important; 
             box-shadow: 0 0 40px rgba(240, 71, 71, 0.8), 0 0 80px rgba(240, 71, 71, 0.4);
         }
+
+        .dnd + .avatar-container::before {
+            opacity: 1 !important;
+            background: linear-gradient(45deg, #f04747, #ff6b6b, #f04747, #d32f2f, #f04747) !important;
+        }
+
         .offline { 
             border-color: #747f8d !important; 
             box-shadow: 0 0 30px rgba(116, 127, 141, 0.4);
+        }
+
+        .offline + .avatar-container::before {
+            opacity: 0.4 !important;
+            background: linear-gradient(45deg, #747f8d, #8a96a8, #747f8d, #5a6673, #747f8d) !important;
         }
 
         h2 {
@@ -593,11 +618,11 @@
         }
 
         .card:nth-child(1) {
-            animation: fadeInUp 1s ease 0.2s both;
+            animation: fadeInUp 0.6s ease 0.1s both;
         }
 
         .card:nth-child(2) {
-            animation: fadeInUp 1s ease 0.4s both;
+            animation: fadeInUp 0.6s ease 0.2s both;
         }
     </style>
 </head>
@@ -612,8 +637,12 @@
 <div class="scanline"></div>
 <div class="vignette"></div>
 
-<audio id="bgm" loop>
-    <source src="https://raw.githubusercontent.com/fivefourtwofive/churka-site/main/Glory.mp3" type="audio/mpeg">
+<video id="post-video" autoplay loop muted playsinline style="display: none;">
+    <source src="https://github.com/fivefourtwofive/churka-site/raw/refs/heads/main/post.mp3" type="audio/mpeg">
+</video>
+
+<audio id="past-audio">
+    <source src="https://github.com/fivefourtwofive/churka-site/raw/refs/heads/main/past.mp3" type="audio/mpeg">
 </audio>
 
 <div id="overlay">
@@ -674,6 +703,33 @@
 </div>
 
 <script>
+    const postVideo = document.getElementById('post-video');
+    const pastAudio = document.getElementById('past-audio');
+    pastAudio.volume = 0.3;
+    
+    setTimeout(() => {
+        postVideo.muted = false;
+        postVideo.volume = 0.3;
+    }, 100);
+    
+    const overlayElement = document.getElementById('overlay');
+    
+    overlayElement.addEventListener('click', function() {
+        const overlay = this;
+        
+        postVideo.pause();
+        postVideo.currentTime = 0;
+        
+        pastAudio.play().catch(e => console.log('Past audio playback failed'));
+        
+        overlay.style.opacity = '0';
+        setTimeout(function() {
+            overlay.style.display = 'none';
+            document.getElementById('main').style.opacity = '1';
+            document.getElementById('main').style.transform = 'scale(1) translateY(0)';
+        }, 600);
+    });
+
     const canvas = document.getElementById('particles');
     const ctx = canvas.getContext('2d');
     let particlesArray = [];
@@ -857,20 +913,6 @@
     }
     setInterval(updateClocks, 1000);
     updateClocks();
-
-    document.getElementById('overlay').addEventListener('click', function() {
-        const audio = document.getElementById('bgm');
-        const overlay = this;
-        audio.volume = 0.25;
-        audio.play().catch(e => console.log('Audio playback failed'));
-
-        overlay.style.opacity = '0';
-        setTimeout(function() {
-            overlay.style.display = 'none';
-            document.getElementById('main').style.opacity = '1';
-            document.getElementById('main').style.transform = 'scale(1) translateY(0)';
-        }, 1000);
-    });
 </script>
 </body>
 </html>
