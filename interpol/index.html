@@ -1,38 +1,133 @@
 <!DOCTYPE html>
-<html>
+<html lang="ru">
 <head>
-    <title>ИНТЕРПОЛ</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>INTERP0L</title>
     <style>
-        body { background-color: #111; color: white; font-family: Courier, monospace; text-align: center; }
-        h1 { color: red; font-size: 50px; text-transform: uppercase; border: 3px solid red; display: inline-block; padding: 10px; margin-top: 50px; }
-        .card { border: 1px solid #333; margin: 20px auto; width: 300px; padding: 10px; background: #222; }
-        .name { font-size: 24px; color: yellow; font-weight: bold; }
-        .status { color: red; font-weight: bold; }
-        img { width: 100%; height: auto; filter: grayscale(100%); }
+        body { 
+            background-color: #0a0a0a; 
+            color: white; 
+            font-family: 'Courier New', monospace; 
+            text-align: center; 
+            padding: 20px;
+        }
+
+        h1 { 
+            color: red; 
+            font-size: 3rem; 
+            text-transform: uppercase; 
+            border-bottom: 2px solid red; 
+            display: inline-block; 
+            margin-bottom: 40px;
+            letter-spacing: 5px;
+        }
+
+        /* СЕТКА ДЛЯ КАРТОЧЕК */
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        /* САМА КАРТОЧКА */
+        .card { 
+            border: 1px solid #333; 
+            background: #111; 
+            padding: 15px; 
+            transition: all 0.3s ease; /* Плавность анимации */
+            position: relative;
+            cursor: crosshair;
+        }
+
+        /* АНИМАЦИЯ ПРИ НАВЕДЕНИИ (ZOOM) */
+        .card:hover {
+            transform: scale(1.05); /* Увеличение */
+            border-color: #ff0000;  /* Красная рамка */
+            box-shadow: 0 0 20px rgba(255, 0, 0, 0.4);
+            z-index: 10;
+        }
+
+        /* ФОТО */
+        .card img { 
+            width: 100%; 
+            height: 300px; /* Фиксированная высота */
+            object-fit: cover; /* Чтобы фото не сплющило */
+            filter: grayscale(100%); /* ЧБ по умолчанию */
+            transition: 0.3s;
+            border-bottom: 2px solid #333;
+        }
+
+        /* ФОТО ПРИ НАВЕДЕНИИ (СТАНОВИТСЯ ЦВЕТНЫМ) */
+        .card:hover img {
+            filter: grayscale(0%);
+        }
+
+        .name { 
+            font-size: 24px; 
+            color: #fff; 
+            font-weight: bold; 
+            margin-top: 15px; 
+            text-transform: uppercase;
+        }
+        
+        .card:hover .name { color: #ff0000; } /* Имя краснеет */
+
+        .status { 
+            color: #888; 
+            font-weight: bold; 
+            margin-top: 5px; 
+            font-size: 14px;
+        }
+
+        .back-btn {
+            display: inline-block;
+            margin-bottom: 30px;
+            color: #666;
+            text-decoration: none;
+            border: 1px solid #333;
+            padding: 10px 30px;
+            transition: 0.3s;
+        }
+        .back-btn:hover { background: #fff; color: #000; }
     </style>
 </head>
 <body>
 
-    <h1>Список миротворцев</h1>
-    <p>И предателей ССО</p>
+    <a href="/" class="back-btn">< НАЗАД НА БАЗУ</a>
+    <br>
+    
+    <h1>МИРОТВОРЦЫ/ПРЕДАТЕЛИ</h1>
 
-    <!-- ПЕРСТУПНИК 1 -->
-    <div class="card">
-        <!-- Сюда потом вставишь ссылку на фото -->
-        <img src="https://i.ibb.co/qLQRvM8L/image.png" alt="Face">
-        <div class="name">Суперкет (1389297160784318610)</div>
-        <div class="status">ПРИЧИНА: ГОС ИЗМЕНА</div>
-    </div>
+    <!-- СПИСОК -->
+    <div class="grid-container">
 
-    <!-- ПЕРСТУПНИК 2 (Копируй этот блок для новых людей) -->
-    <div class="card">
-        <img src="https://otvet.imgsmail.ru/download/266177696_0f3b65a67e2f909961c87bbd0a85ea07.jpg" alt="Face">
-        <div class="name">ЛУРБУМДАМБЕК</div>
-        <div class="status">ПРИЧИНА: НЕ СВЕЖАЯ ШАУРМА</div>
+        <!-- ========================================== -->
+        <!-- ЧТОБЫ ДОБАВИТЬ ЧЕЛОВЕКА, КОПИРУЙ ОТСЮДА... -->
+        
+        <div class="card">
+            <!-- Ссылка на фото (можно из Дискорда или загрузить на Гитхаб) -->
+            <img src="https://i.ibb.co/qLQRvM8L/image.png" alt="Фото">
+            
+            <div class="name">Суперкет (1389297160784318610)</div>
+            <div class="status">ПРИЧИНА: ГОСИЗМЕНА</div>
+        </div>
+
+        <!-- ...ДО СЮДА -->
+        <!-- ========================================== -->
+
+        <!-- ПРИМЕР ВТОРОГО ЧЕЛА -->
+        <div class="card">
+            <img src="https://otvet.imgsmail.ru/download/266177696_0f3b65a67e2f909961c87bbd0a85ea07.jpg" alt="Фото">
+            <div class="name">ЛАРЕК ШАУРМЫ 211 (УЗБЕКИСТАН)</div>
+            <div class="status">ПРИЧИНА: НЕ СВЕЖИЙ СОУС</div>
+        </div>
+
+        <!-- Вставь копию блока сюда, чтобы добавить третьего -->
+
     </div>
 
 </body>
-
 </html>
-
-
