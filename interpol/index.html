@@ -3,144 +3,995 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>INTERP0L</title>
+    <title>INTERPOL</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700;800&family=Orbitron:wght@700;800;900&display=swap" rel="stylesheet">
     <style>
-        body { 
-            background-color: #0a0a0a; 
-            color: white; 
-            font-family: 'Courier New', monospace; 
-            text-align: center; 
+        *,
+        *::before,
+        *::after {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --void-black: #000000;
+            --blood-red: #ff0000;
+            --blood-dark: #cc0000;
+            --blood-deep: #990000;
+            --blood-glow: rgba(255, 0, 0, 0.5);
+            --blood-subtle: rgba(255, 0, 0, 0.15);
+            --card-bg: rgba(20, 0, 0, 0.9);
+            --card-border: rgba(255, 0, 0, 0.2);
+            --white-pure: #ffffff;
+            --white-muted: rgba(255, 255, 255, 0.8);
+            --white-dim: rgba(255, 255, 255, 0.4);
+            --font-display: 'Orbitron', sans-serif;
+            --font-mono: 'JetBrains Mono', monospace;
+            --transition-glitch: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            min-height: 100vh;
+            background: var(--void-black);
+            font-family: var(--font-mono);
+            color: var(--white-pure);
+            cursor: crosshair;
+            overflow-x: hidden;
+        }
+
+        /* ═══════════════════════════════════════════════════════════
+           BACKGROUND EFFECTS
+        ═══════════════════════════════════════════════════════════ */
+        .bg-effects {
+            position: fixed;
+            inset: 0;
+            z-index: -1;
+            pointer-events: none;
+            overflow: hidden;
+        }
+
+        /* Hexagon Grid Pattern */
+        .hex-grid {
+            position: absolute;
+            inset: 0;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='28' height='49' viewBox='0 0 28 49'%3E%3Cg fill-rule='evenodd'%3E%3Cg fill='%23ff0000' fill-opacity='0.03'%3E%3Cpath d='M13.99 9.25l13 7.5v15l-13 7.5L1 31.75v-15l12.99-7.5zM3 17.9v12.7l10.99 6.34 11-6.35V17.9l-11-6.34L3 17.9zM0 15l12.98-7.5V0h-2v6.35L0 12.69v2.3zm0 18.5L12.98 41v8h-2v-6.85L0 35.81v-2.3zM15 0v7.5L27.99 15H28v-2.31h-.01L17 6.35V0h-2zm0 49v-8l12.99-7.5H28v2.31h-.01L17 42.15V49h-2z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+            opacity: 0.8;
+        }
+
+        /* Digital Grid Lines */
+        .digital-grid {
+            position: absolute;
+            inset: 0;
+            background-image: 
+                linear-gradient(rgba(255, 0, 0, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 0, 0, 0.03) 1px, transparent 1px);
+            background-size: 50px 50px;
+            animation: gridPulse 4s ease-in-out infinite;
+        }
+
+        @keyframes gridPulse {
+            0%, 100% { opacity: 0.5; }
+            50% { opacity: 0.8; }
+        }
+
+        /* Scan Line Animation */
+        .scan-line {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(
+                180deg,
+                transparent,
+                rgba(255, 0, 0, 0.3),
+                transparent
+            );
+            animation: scanMove 8s linear infinite;
+        }
+
+        @keyframes scanMove {
+            0% { top: -10px; }
+            100% { top: 100%; }
+        }
+
+        /* Noise Overlay */
+        .noise {
+            position: absolute;
+            inset: 0;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+            opacity: 0.03;
+            mix-blend-mode: overlay;
+        }
+
+        /* Vignette */
+        .vignette {
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(
+                ellipse 70% 70% at 50% 50%,
+                transparent 0%,
+                transparent 40%,
+                rgba(0, 0, 0, 0.95) 100%
+            );
+        }
+
+        /* ═══════════════════════════════════════════════════════════
+           MAIN CONTAINER
+        ═══════════════════════════════════════════════════════════ */
+        .main-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 40px 30px 80px;
+            position: relative;
+        }
+
+        /* ═══════════════════════════════════════════════════════════
+           TACTICAL BACK BUTTON
+        ═══════════════════════════════════════════════════════════ */
+        .back-btn {
+            position: fixed;
+            top: 30px;
+            left: 30px;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 24px;
+            background: rgba(255, 0, 0, 0.1);
+            border: 1px solid rgba(255, 0, 0, 0.3);
+            border-radius: 4px;
+            color: var(--blood-red);
+            font-family: var(--font-mono);
+            font-size: 0.7rem;
+            font-weight: 600;
+            letter-spacing: 3px;
+            text-decoration: none;
+            text-transform: uppercase;
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            cursor: crosshair;
+            transition: all 0.3s ease;
+            z-index: 100;
+        }
+
+        .back-btn::before {
+            content: '◄';
+            font-size: 0.8rem;
+            transition: transform 0.3s ease;
+        }
+
+        .back-btn::after {
+            content: '';
+            position: absolute;
+            inset: -1px;
+            border: 1px solid var(--blood-red);
+            border-radius: 4px;
+            opacity: 0;
+            animation: borderPulse 2s ease-in-out infinite;
+        }
+
+        @keyframes borderPulse {
+            0%, 100% { opacity: 0; transform: scale(1); }
+            50% { opacity: 0.5; transform: scale(1.02); }
+        }
+
+        .back-btn:hover {
+            background: var(--blood-red);
+            border-color: var(--blood-red);
+            color: var(--void-black);
+            box-shadow: 0 0 30px var(--blood-glow);
+        }
+
+        .back-btn:hover::before {
+            transform: translateX(-4px);
+        }
+
+        /* ═══════════════════════════════════════════════════════════
+           HEADER SECTION
+        ═══════════════════════════════════════════════════════════ */
+        .header-section {
+            text-align: center;
+            padding: 60px 0 70px;
+        }
+
+        /* Classification Badge */
+        .classification {
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px 25px;
+            background: rgba(255, 0, 0, 0.1);
+            border: 1px solid var(--blood-red);
+            margin-bottom: 30px;
+            animation: classificationFlash 2s ease-in-out infinite;
+        }
+
+        @keyframes classificationFlash {
+            0%, 100% { border-color: var(--blood-red); box-shadow: 0 0 10px var(--blood-glow); }
+            50% { border-color: var(--blood-dark); box-shadow: 0 0 20px var(--blood-glow); }
+        }
+
+        .classification-dot {
+            width: 8px;
+            height: 8px;
+            background: var(--blood-red);
+            border-radius: 50%;
+            animation: dotBlink 1s ease-in-out infinite;
+        }
+
+        @keyframes dotBlink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.3; }
+        }
+
+        .classification-text {
+            font-size: 0.6rem;
+            font-weight: 700;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            color: var(--blood-red);
+        }
+
+        /* Main Title with Glitch */
+        .main-title {
+            font-family: var(--font-display);
+            font-size: clamp(1.8rem, 6vw, 4rem);
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: 8px;
+            color: var(--blood-red);
+            position: relative;
+            margin-bottom: 20px;
+            text-shadow: 
+                0 0 10px var(--blood-glow),
+                0 0 30px rgba(255, 0, 0, 0.4),
+                0 0 60px rgba(255, 0, 0, 0.2);
+            animation: titleGlow 3s ease-in-out infinite, glitchTitle 5s ease-in-out infinite;
+        }
+
+        @keyframes titleGlow {
+            0%, 100% {
+                text-shadow: 
+                    0 0 10px var(--blood-glow),
+                    0 0 30px rgba(255, 0, 0, 0.4),
+                    0 0 60px rgba(255, 0, 0, 0.2);
+            }
+            50% {
+                text-shadow: 
+                    0 0 20px var(--blood-glow),
+                    0 0 50px rgba(255, 0, 0, 0.6),
+                    0 0 100px rgba(255, 0, 0, 0.3);
+            }
+        }
+
+        @keyframes glitchTitle {
+            0%, 90%, 100% { transform: translate(0); filter: none; }
+            91% { transform: translate(-3px, 1px); filter: hue-rotate(90deg); }
+            92% { transform: translate(3px, -1px); filter: hue-rotate(-90deg); }
+            93% { transform: translate(-2px, -1px); filter: none; }
+            94% { transform: translate(2px, 1px); filter: hue-rotate(45deg); }
+            95% { transform: translate(0); filter: none; }
+        }
+
+        .main-title::before,
+        .main-title::after {
+            content: attr(data-text);
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+        }
+
+        .main-title::before {
+            color: #0ff;
+            animation: glitchLayer1 5s ease-in-out infinite;
+        }
+
+        .main-title::after {
+            color: #f0f;
+            animation: glitchLayer2 5s ease-in-out infinite;
+        }
+
+        @keyframes glitchLayer1 {
+            0%, 90%, 100% { opacity: 0; transform: translate(0); }
+            91%, 93% { opacity: 0.8; transform: translate(-4px, 2px); }
+            92%, 94% { opacity: 0; }
+        }
+
+        @keyframes glitchLayer2 {
+            0%, 90%, 100% { opacity: 0; transform: translate(0); }
+            91%, 93% { opacity: 0.8; transform: translate(4px, -2px); }
+            92%, 94% { opacity: 0; }
+        }
+
+        /* Subtitle */
+        .subtitle {
+            font-size: 0.75rem;
+            font-weight: 500;
+            letter-spacing: 6px;
+            text-transform: uppercase;
+            color: var(--white-dim);
+        }
+
+        /* Header Line */
+        .header-line {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 30px;
+        }
+
+        .header-line::before,
+        .header-line::after {
+            content: '';
+            width: 100px;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--blood-red), transparent);
+        }
+
+        .target-count {
+            font-size: 0.65rem;
+            font-weight: 600;
+            letter-spacing: 2px;
+            color: var(--blood-red);
+            padding: 6px 15px;
+            border: 1px solid var(--card-border);
+            background: rgba(255, 0, 0, 0.05);
+        }
+
+        /* ═══════════════════════════════════════════════════════════
+           TARGETS GRID
+        ═══════════════════════════════════════════════════════════ */
+        .targets-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 30px;
+            padding: 20px 0;
+        }
+
+        /* ═══════════════════════════════════════════════════════════
+           TARGET CARD (Digital Dossier)
+        ═══════════════════════════════════════════════════════════ */
+        .target-card {
+            position: relative;
+            background: var(--card-bg);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid var(--card-border);
+            cursor: crosshair;
+            overflow: hidden;
+            opacity: 0;
+            transform: translateY(30px);
+            will-change: transform, opacity;
+            transition: all 0.4s var(--transition-glitch);
+        }
+
+        .target-card.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Bracket Corners */
+        .target-card::before,
+        .target-card::after,
+        .card-inner::before,
+        .card-inner::after {
+            content: '';
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            border: 2px solid var(--blood-red);
+            opacity: 0.6;
+            transition: all 0.3s ease;
+        }
+
+        .target-card::before {
+            top: 8px;
+            left: 8px;
+            border-right: none;
+            border-bottom: none;
+        }
+
+        .target-card::after {
+            top: 8px;
+            right: 8px;
+            border-left: none;
+            border-bottom: none;
+        }
+
+        .card-inner::before {
+            bottom: 8px;
+            left: 8px;
+            border-right: none;
+            border-top: none;
+        }
+
+        .card-inner::after {
+            bottom: 8px;
+            right: 8px;
+            border-left: none;
+            border-top: none;
+        }
+
+        .target-card:hover::before,
+        .target-card:hover::after,
+        .target-card:hover .card-inner::before,
+        .target-card:hover .card-inner::after {
+            opacity: 1;
+            width: 30px;
+            height: 30px;
+        }
+
+        .target-card:hover {
+            border-color: var(--blood-red);
+            box-shadow: 
+                0 0 40px rgba(255, 0, 0, 0.3),
+                inset 0 0 60px rgba(255, 0, 0, 0.05);
+            animation: cardPulse 1s ease-in-out infinite;
+        }
+
+        @keyframes cardPulse {
+            0%, 100% { box-shadow: 0 0 40px rgba(255, 0, 0, 0.3), inset 0 0 60px rgba(255, 0, 0, 0.05); }
+            50% { box-shadow: 0 0 60px rgba(255, 0, 0, 0.5), inset 0 0 80px rgba(255, 0, 0, 0.08); }
+        }
+
+        .card-inner {
+            position: relative;
             padding: 20px;
         }
 
-        h1 { 
-            color: red; 
-            font-size: 3rem; 
-            text-transform: uppercase; 
-            border-bottom: 2px solid red; 
-            display: inline-block; 
-            margin-bottom: 40px;
-            letter-spacing: 5px;
-        }
-
-
-        .grid-container {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 30px;
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-
-
-        .card { 
-            border: 1px solid #333; 
-            background: #111; 
-            padding: 15px; 
-            transition: all 0.3s ease; 
-            position: relative;
-            cursor: crosshair;
-        }
-
-
-        .card:hover {
-            transform: scale(1.05); 
-            border-color: #ff0000;  
-            box-shadow: 0 0 20px rgba(255, 0, 0, 0.4);
+        /* Target Number */
+        .target-number {
+            position: absolute;
+            top: 25px;
+            left: 25px;
+            font-size: 0.55rem;
+            font-weight: 700;
+            letter-spacing: 2px;
+            color: var(--blood-red);
             z-index: 10;
+            padding: 4px 10px;
+            background: rgba(0, 0, 0, 0.7);
+            border: 1px solid var(--card-border);
         }
 
-
-        .card img { 
-            width: 100%; 
-            height: 500px;
-            object-fit: cover; 
-            filter: grayscale(100%);
-            transition: 0.3s;
-            border-bottom: 2px solid #333;
+        /* Image Container with Scanlines */
+        .image-container {
+            position: relative;
+            width: 100%;
+            height: 400px;
+            overflow: hidden;
+            margin-bottom: 20px;
         }
 
-
-        .card:hover img {
-            filter: grayscale(0%);
+        .target-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            filter: grayscale(100%) contrast(1.3) brightness(0.8);
+            transform: scale(1);
+            transition: all 0.5s var(--transition-glitch);
         }
 
-        .name { 
-            font-size: 24px; 
-            color: #fff; 
-            font-weight: bold; 
-            margin-top: 15px; 
+        /* Scanline Overlay (CRT Effect) */
+        .scanlines-overlay {
+            position: absolute;
+            inset: 0;
+            background: repeating-linear-gradient(
+                0deg,
+                transparent,
+                transparent 2px,
+                rgba(0, 0, 0, 0.3) 2px,
+                rgba(0, 0, 0, 0.3) 4px
+            );
+            pointer-events: none;
+            opacity: 0.7;
+            transition: opacity 0.4s ease;
+        }
+
+        /* Red Tint Overlay */
+        .red-tint {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(
+                180deg,
+                rgba(255, 0, 0, 0.1) 0%,
+                transparent 30%,
+                transparent 70%,
+                rgba(255, 0, 0, 0.15) 100%
+            );
+            pointer-events: none;
+            mix-blend-mode: overlay;
+        }
+
+        /* Glitch Effect on Hover */
+        .target-card:hover .target-image {
+            filter: grayscale(0%) contrast(1.1) brightness(1);
+            transform: scale(1.05);
+            animation: imageGlitch 0.3s ease;
+        }
+
+        @keyframes imageGlitch {
+            0% { filter: grayscale(100%) contrast(1.3); transform: scale(1) translate(0); }
+            20% { filter: grayscale(50%) contrast(1.2) hue-rotate(90deg); transform: scale(1.02) translate(-3px, 2px); }
+            40% { filter: grayscale(30%) contrast(1.1); transform: scale(1.03) translate(3px, -2px); }
+            60% { filter: grayscale(10%) contrast(1.05) hue-rotate(-45deg); transform: scale(1.04) translate(-2px, 1px); }
+            80% { filter: grayscale(0%) contrast(1.1); transform: scale(1.05) translate(1px, -1px); }
+            100% { filter: grayscale(0%) contrast(1.1); transform: scale(1.05) translate(0); }
+        }
+
+        .target-card:hover .scanlines-overlay {
+            opacity: 0.2;
+        }
+
+        /* Target Info */
+        .target-info {
+            padding: 0 5px;
+        }
+
+        /* Target Name */
+        .target-name {
+            font-family: var(--font-mono);
+            font-size: 1rem;
+            font-weight: 700;
             text-transform: uppercase;
-        }
-        
-        .card:hover .name { color: #ff0000; } 
-
-        .status { 
-            color: #888; 
-            font-weight: bold; 
-            margin-top: 5px; 
-            font-size: 14px;
+            letter-spacing: 2px;
+            color: var(--white-pure);
+            margin-bottom: 15px;
+            transition: color 0.3s ease;
         }
 
-        .back-btn {
+        .target-card:hover .target-name {
+            color: var(--blood-red);
+            text-shadow: 0 0 10px var(--blood-glow);
+        }
+
+        /* Reason STAMP */
+        .reason-stamp {
             display: inline-block;
-            margin-bottom: 30px;
-            color: #666;
-            text-decoration: none;
-            border: 1px solid #333;
-            padding: 10px 30px;
-            transition: 0.3s;
+            padding: 8px 20px;
+            background: var(--blood-red);
+            color: var(--white-pure);
+            font-size: 0.65rem;
+            font-weight: 800;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            transform: rotate(-2deg);
+            box-shadow: 
+                3px 3px 0 var(--blood-dark),
+                0 0 20px rgba(255, 0, 0, 0.3);
+            position: relative;
+            border: 2px solid var(--white-pure);
         }
-        .back-btn:hover { background: #fff; color: #000; }
+
+        .reason-stamp::before {
+            content: '⚠';
+            margin-right: 8px;
+        }
+
+        .reason-stamp::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: repeating-linear-gradient(
+                45deg,
+                transparent,
+                transparent 3px,
+                rgba(255, 255, 255, 0.05) 3px,
+                rgba(255, 255, 255, 0.05) 6px
+            );
+        }
+
+        /* Card Status Bar */
+        .status-bar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-top: 20px;
+            padding-top: 15px;
+            border-top: 1px solid var(--card-border);
+            font-size: 0.55rem;
+            color: var(--white-dim);
+            letter-spacing: 1px;
+        }
+
+        .status-indicator {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .status-dot {
+            width: 6px;
+            height: 6px;
+            background: var(--blood-red);
+            border-radius: 50%;
+            animation: statusBlink 1.5s ease-in-out infinite;
+        }
+
+        @keyframes statusBlink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.3; }
+        }
+
+        /* Staggered Animation Delays */
+        .target-card:nth-child(1) { transition-delay: 0.1s; }
+        .target-card:nth-child(2) { transition-delay: 0.2s; }
+        .target-card:nth-child(3) { transition-delay: 0.3s; }
+        .target-card:nth-child(4) { transition-delay: 0.4s; }
+        .target-card:nth-child(5) { transition-delay: 0.5s; }
+
+        /* ═══════════════════════════════════════════════════════════
+           FOOTER
+        ═══════════════════════════════════════════════════════════ */
+        .footer {
+            text-align: center;
+            padding: 50px 0 20px;
+            margin-top: 50px;
+            border-top: 1px solid var(--card-border);
+        }
+
+        .footer-text {
+            font-size: 0.6rem;
+            font-weight: 500;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            color: var(--white-dim);
+        }
+
+        .footer-text span {
+            color: var(--blood-red);
+        }
+
+        /* ═══════════════════════════════════════════════════════════
+           RESPONSIVE
+        ═══════════════════════════════════════════════════════════ */
+        @media (max-width: 768px) {
+            .main-container {
+                padding: 30px 16px 60px;
+            }
+
+            .back-btn {
+                position: relative;
+                top: auto;
+                left: auto;
+                margin-bottom: 20px;
+            }
+
+            .header-section {
+                padding: 30px 0 50px;
+            }
+
+            .main-title {
+                letter-spacing: 4px;
+            }
+
+            .targets-grid {
+                grid-template-columns: 1fr;
+                gap: 25px;
+            }
+
+            .image-container {
+                height: 350px;
+            }
+
+            .target-name {
+                font-size: 0.9rem;
+            }
+        }
+
+        /* ═══════════════════════════════════════════════════════════
+           SCROLLBAR
+        ═══════════════════════════════════════════════════════════ */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--void-black);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--blood-dark);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--blood-red);
+        }
+
+        /* ═══════════════════════════════════════════════════════════
+           SELECTION
+        ═══════════════════════════════════════════════════════════ */
+        ::selection {
+            background: var(--blood-red);
+            color: var(--void-black);
+        }
     </style>
 </head>
 <body>
 
-    <a href="/" class="back-btn"><НАЗАД</a>
-    <br>
-    
-    <h1>МИРОТВОРЦЫ/ПРЕДАТЕЛИ</h1>
-
-
-    <div class="grid-container">
-
-        
-        <div class="card">
-            <img src="https://i.ibb.co/qLQRvM8L/image.png" alt="Фото">
-            
-            <div class="name">Суперкет (1389297160784318610)</div>
-            <div class="status">ПРИЧИНА: ГОСИЗМЕНА</div>
-        </div>
-
-
-        <div class="card">
-            <img src="https://otvet.imgsmail.ru/download/266177696_0f3b65a67e2f909961c87bbd0a85ea07.jpg" alt="Фото">
-            <div class="name">ЛАРЕК ШАУРМЫ 211 (УЗБЕКИСТАН)</div>
-            <div class="status">ПРИЧИНА: НЕ СВЕЖИЙ СОУС</div>
-        </div>
-
-
-        <div class="card">
-            <img src="https://i.pinimg.com/736x/34/cd/82/34cd826bad4d8c11e060f7fdf849e1f6.jpg" alt="Фото">
-            <div class="name">bananacry123 (761063877772836904)</div>
-            <div class="status">ПРИЧИНА: БАТЯ ХУЙНИ</div>
-        </div>
-
-                <div class="card">
-            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSOTElyge_oKuQvJycZoiBTCukjQEclsGdfMA&s" alt="Фото">
-            <div class="name">xqzmmee (1424094276610035824) </div>
-            <div class="status">ПРИЧИНА: СЫН ХУЙНИ</div>
-        </div>
-
-                <div class="card">
-            <img src="https://ultrakill.wiki.gg/images/V2.webp?788b45" alt="Фото">
-            
-            <div class="name">V2 </div>
-            <div class="status">ПРИЧИНА:ХУЙНЯ</div>
-        </div>
-        
-        
+    <!-- Background Effects -->
+    <div class="bg-effects">
+        <div class="hex-grid"></div>
+        <div class="digital-grid"></div>
+        <div class="scan-line"></div>
+        <div class="noise"></div>
+        <div class="vignette"></div>
     </div>
+
+    <!-- Main Container -->
+    <div class="main-container">
+
+        <!-- Tactical Back Button -->
+        <a href="/" class="back-btn">НАЗАД</a>
+
+        <!-- Header Section -->
+        <header class="header-section">
+            <div class="classification">
+                <span class="classification-dot"></span>
+                <span class="classification-text">HYINI</span>
+                <span class="classification-dot"></span>
+            </div>
+            
+            <h1 class="main-title" data-text="МИРОТВОРЦЫ/ПРЕДАТЕЛИ">МИРОТВОРЦЫ/ПРЕДАТЕЛИ</h1>
+            
+            <p class="subtitle">INTERPOL DATABASE // БАЗА ИНТЕРПОЛА</p>
+            
+            <div class="header-line">
+                <span class="target-count">TARGETS: 5</span>
+            </div>
+        </header>
+
+        <!-- Targets Grid -->
+        <div class="targets-grid">
+
+            <!-- Target 1: Суперкет -->
+            <div class="target-card">
+                <div class="card-inner">
+                    <span class="target-number">TGT-001</span>
+                    <div class="image-container">
+                        <img class="target-image" src="https://i.ibb.co/qLQRvM8L/image.png" alt="Суперкет">
+                        <div class="scanlines-overlay"></div>
+                        <div class="red-tint"></div>
+                    </div>
+                    <div class="target-info">
+                        <h2 class="target-name">Суперкет</h2>
+                        <div class="reason-stamp">ГОСИЗМЕНА</div>
+                        <div class="status-bar">
+                            <div class="status-indicator">
+                                <span class="status-dot"></span>
+                                <span>ACTIVE MANHUNT</span>
+                            </div>
+                            <span>ID: 1389297160784318610</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Target 2: ЛАРЕК ШАУРМЫ 211 -->
+            <div class="target-card">
+                <div class="card-inner">
+                    <span class="target-number">TGT-002</span>
+                    <div class="image-container">
+                        <img class="target-image" src="https://otvet.imgsmail.ru/download/266177696_0f3b65a67e2f909961c87bbd0a85ea07.jpg" alt="ЛАРЕК ШАУРМЫ 211">
+                        <div class="scanlines-overlay"></div>
+                        <div class="red-tint"></div>
+                    </div>
+                    <div class="target-info">
+                        <h2 class="target-name">ЛАРЕК ШАУРМЫ 211</h2>
+                        <div class="reason-stamp">НЕ СВЕЖИЙ СОУС</div>
+                        <div class="status-bar">
+                            <div class="status-indicator">
+                                <span class="status-dot"></span>
+                                <span>ACTIVE MANHUNT</span>
+                            </div>
+                            <span>LOC: УЗБЕКИСТАН</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Target 3: bananacry123 -->
+            <div class="target-card">
+                <div class="card-inner">
+                    <span class="target-number">TGT-003</span>
+                    <div class="image-container">
+                        <img class="target-image" src="https://i.pinimg.com/736x/34/cd/82/34cd826bad4d8c11e060f7fdf849e1f6.jpg" alt="bananacry123">
+                        <div class="scanlines-overlay"></div>
+                        <div class="red-tint"></div>
+                    </div>
+                    <div class="target-info">
+                        <h2 class="target-name">bananacry123</h2>
+                        <div class="reason-stamp">БАТЯ ХУЙНИ</div>
+                        <div class="status-bar">
+                            <div class="status-indicator">
+                                <span class="status-dot"></span>
+                                <span>ACTIVE MANHUNT</span>
+                            </div>
+                            <span>ID: 761063877772836904</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Target 4: xqzmmee -->
+            <div class="target-card">
+                <div class="card-inner">
+                    <span class="target-number">TGT-004</span>
+                    <div class="image-container">
+                        <img class="target-image" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSOTElyge_oKuQvJycZoiBTCukjQEclsGdfMA&s" alt="xqzmmee">
+                        <div class="scanlines-overlay"></div>
+                        <div class="red-tint"></div>
+                    </div>
+                    <div class="target-info">
+                        <h2 class="target-name">xqzmmee</h2>
+                        <div class="reason-stamp">СЫН ХУЙНИ</div>
+                        <div class="status-bar">
+                            <div class="status-indicator">
+                                <span class="status-dot"></span>
+                                <span>ACTIVE MANHUNT</span>
+                            </div>
+                            <span>ID: 1424094276610035824</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Target 5: V2 -->
+            <div class="target-card">
+                <div class="card-inner">
+                    <span class="target-number">TGT-005</span>
+                    <div class="image-container">
+                        <img class="target-image" src="https://ultrakill.wiki.gg/images/V2.webp?788b45" alt="V2">
+                        <div class="scanlines-overlay"></div>
+                        <div class="red-tint"></div>
+                    </div>
+                    <div class="target-info">
+                        <h2 class="target-name">V2</h2>
+                        <div class="reason-stamp">ХУЙНЯ</div>
+                        <div class="status-bar">
+                            <div class="status-indicator">
+                                <span class="status-dot"></span>
+                                <span>ACTIVE MANHUNT</span>
+                            </div>
+                            <span>STATUS: DEAD</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Target 4: xqzmmee -->
+            <div class="target-card">
+                <div class="card-inner">
+                    <span class="target-number">TGT-006</span>
+                    <div class="image-container">
+                        <img class="target-image" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQq7BlZ73rApQT3Dpbfy-3R-K8ij0ed_9xa6A&s" alt="xqzmmee">
+                        <div class="scanlines-overlay"></div>
+                        <div class="red-tint"></div>
+                    </div>
+                    <div class="target-info">
+                        <h2 class="target-name">Hakita</h2>
+                        <div class="reason-stamp">RECONSTRUCT WHAT</div>
+                        <div class="status-bar">
+                            <div class="status-indicator">
+                                <span class="status-dot"></span>
+                                <span>ACTIVE MANHUNT</span>
+                            </div>
+                            <span>ID: ULTRAKILL</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+        </div>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <p class="footer-text">
+                <span>◆</span> ИНТЕРПОЛ <span>◆</span> ИНТЕРПОЛ <span>◆</span>
+            </p>
+        </footer>
+
+    </div>
+
+    <script>
+        // ═══════════════════════════════════════════════════════════
+        // STAGGERED CARD ENTRANCE WITH "DECODING" EFFECT
+        // ═══════════════════════════════════════════════════════════
+        document.addEventListener('DOMContentLoaded', () => {
+            const cards = document.querySelectorAll('.target-card');
+            const names = document.querySelectorAll('.target-name');
+            
+            // Decoding effect for names
+            const chars = 'АБВГДЕЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ0123456789@#$%&';
+            
+            function decodeText(element, finalText) {
+                let iteration = 0;
+                const interval = setInterval(() => {
+                    element.textContent = finalText
+                        .split('')
+                        .map((char, index) => {
+                            if (index < iteration) {
+                                return finalText[index];
+                            }
+                            return chars[Math.floor(Math.random() * chars.length)];
+                        })
+                        .join('');
+                    
+                    if (iteration >= finalText.length) {
+                        clearInterval(interval);
+                    }
+                    
+                    iteration += 1/2;
+                }, 40);
+            }
+
+            // Intersection Observer for cards
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach((entry, index) => {
+                    if (entry.isIntersecting) {
+                        setTimeout(() => {
+                            entry.target.classList.add('visible');
+                            
+                            // Trigger decode effect for the name
+                            const nameEl = entry.target.querySelector('.target-name');
+                            if (nameEl) {
+                                const originalText = nameEl.textContent;
+                                decodeText(nameEl, originalText);
+                            }
+                        }, index * 150);
+                        
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, { threshold: 0.1 });
+
+            setTimeout(() => {
+                cards.forEach(card => observer.observe(card));
+            }, 500);
+        });
+
+        // ═══════════════════════════════════════════════════════════
+        // RANDOM GLITCH EFFECT ON TITLE
+        // ═══════════════════════════════════════════════════════════
+        const title = document.querySelector('.main-title');
+        
+        setInterval(() => {
+            if (Math.random() > 0.95) {
+                title.style.transform = `translate(${Math.random() * 4 - 2}px, ${Math.random() * 4 - 2}px)`;
+                title.style.textShadow = `
+                    ${Math.random() * 10 - 5}px 0 #0ff,
+                    ${Math.random() * -10 + 5}px 0 #f0f,
+                    0 0 20px rgba(255, 0, 0, 0.5)
+                `;
+                
+                setTimeout(() => {
+                    title.style.transform = 'translate(0)';
+                    title.style.textShadow = '';
+                }, 100);
+            }
+        }, 100);
+
+        // ═══════════════════════════════════════════════════════════
+        // CONSOLE EASTER EGG
+        // ═══════════════════════════════════════════════════════════
+        console.log('supershket shalava', 'color: #ff0000; font-size: 24px; font-weight: bold;');
+        console.log('supershket shalava...', 'color: #ff6666; font-size: 12px;');
+        console.log('supershket shalava', 'color: #ff0000; font-size: 11px;');
+        console.log('supershket shalava', 'color: #666; font-size: 10px;');
+    </script>
 
 </body>
 </html>
