@@ -3,91 +3,78 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Uhazheri Mami Tigra</title>
+    <title>Ветераны</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Montserrat:wght@600;700;800;900&display=swap" rel="stylesheet">
     <style>
-        *,
-        *::before,
-        *::after {
+        * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
 
-        :root {
-            --void-black: #000000;
-            --card-bg: rgba(20, 20, 20, 0.8);
-            --card-bg-hover: rgba(30, 28, 20, 0.9);
-            --gold-primary: #FFD700;
-            --gold-light: #ffe44d;
-            --gold-dark: #b8960b;
-            --gold-glow: rgba(255, 215, 0, 0.4);
-            --gold-subtle: rgba(255, 215, 0, 0.15);
-            --white-pure: #ffffff;
-            --white-muted: rgba(255, 255, 255, 0.7);
-            --white-dim: rgba(255, 255, 255, 0.4);
-            --border-default: rgba(255, 255, 255, 0.06);
-            --border-hover: rgba(255, 215, 0, 0.6);
-            --font-display: 'Montserrat', sans-serif;
-            --font-mono: 'JetBrains Mono', monospace;
-            --blur-glass: 10px;
-            --transition-smooth: cubic-bezier(0.4, 0, 0.2, 1);
-        }
-
-        html {
-            scroll-behavior: smooth;
-        }
-
         body {
+            font-family: 'JetBrains Mono', monospace;
+            background: #000000;
+            color: #ffffff;
             min-height: 100vh;
-            background: var(--void-black);
-            font-family: var(--font-mono);
-            color: var(--white-pure);
+            padding: 40px 20px;
+            position: relative;
             overflow-x: hidden;
         }
 
-        /* ═══════════════════════════════════════════════════════════
-           BACKGROUND EFFECTS
-        ═══════════════════════════════════════════════════════════ */
-        .bg-effects {
+        body::before {
+            content: '';
             position: fixed;
             inset: 0;
-            z-index: -1;
+            background: radial-gradient(ellipse 80% 80% at 50% 50%, transparent 0%, transparent 50%, rgba(0, 0, 0, 0.95) 100%);
             pointer-events: none;
-            overflow: hidden;
+            z-index: 1;
         }
 
-        /* Gold Dust Gradient */
-        .gold-dust {
-            position: absolute;
+        body::after {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background-image: 
+                linear-gradient(rgba(255, 215, 0, 0.015) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 215, 0, 0.015) 1px, transparent 1px);
+            background-size: 50px 50px;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .gold-glow {
+            position: fixed;
             inset: 0;
             background: 
-                radial-gradient(ellipse 600px 600px at 20% 20%, rgba(255, 215, 0, 0.03) 0%, transparent 50%),
-                radial-gradient(ellipse 500px 500px at 80% 80%, rgba(255, 215, 0, 0.04) 0%, transparent 50%),
-                radial-gradient(ellipse 400px 400px at 60% 30%, rgba(255, 215, 0, 0.02) 0%, transparent 50%);
-            animation: dustFloat 20s ease-in-out infinite;
+                radial-gradient(ellipse 600px 600px at 20% 20%, rgba(255, 215, 0, 0.04) 0%, transparent 50%),
+                radial-gradient(ellipse 500px 500px at 80% 80%, rgba(255, 215, 0, 0.05) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: 1;
+            animation: glowFloat 20s ease-in-out infinite;
         }
 
-        @keyframes dustFloat {
-            0%, 100% { transform: translate(0, 0) scale(1); }
-            25% { transform: translate(20px, -30px) scale(1.02); }
-            50% { transform: translate(-15px, 20px) scale(0.98); }
-            75% { transform: translate(25px, 15px) scale(1.01); }
+        @keyframes glowFloat {
+            0%, 100% { transform: translate(0, 0); }
+            25% { transform: translate(20px, -30px); }
+            50% { transform: translate(-15px, 20px); }
+            75% { transform: translate(25px, 15px); }
         }
 
-        /* Floating Particles */
         .particles {
-            position: absolute;
+            position: fixed;
             inset: 0;
+            pointer-events: none;
+            z-index: 1;
         }
 
         .particle {
             position: absolute;
             width: 2px;
             height: 2px;
-            background: var(--gold-primary);
+            background: #FFD700;
             border-radius: 50%;
             opacity: 0;
             animation: particleFloat 8s ease-in-out infinite;
@@ -99,8 +86,6 @@
         .particle:nth-child(4) { left: 65%; top: 70%; animation-delay: 3s; }
         .particle:nth-child(5) { left: 80%; top: 40%; animation-delay: 4s; }
         .particle:nth-child(6) { left: 15%; top: 80%; animation-delay: 5s; }
-        .particle:nth-child(7) { left: 90%; top: 20%; animation-delay: 6s; }
-        .particle:nth-child(8) { left: 50%; top: 90%; animation-delay: 7s; }
 
         @keyframes particleFloat {
             0%, 100% { opacity: 0; transform: translateY(0) scale(1); }
@@ -110,61 +95,31 @@
             100% { opacity: 0; transform: translateY(-200px) scale(0.5); }
         }
 
-        /* Noise Texture */
-        .noise {
-            position: absolute;
-            inset: 0;
-            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
-            opacity: 0.02;
-        }
-
-        /* Vignette */
-        .vignette {
-            position: absolute;
-            inset: 0;
-            background: radial-gradient(
-                ellipse 70% 70% at 50% 50%,
-                transparent 0%,
-                transparent 50%,
-                rgba(0, 0, 0, 0.9) 100%
-            );
-        }
-
-        /* ═══════════════════════════════════════════════════════════
-           MAIN CONTAINER
-        ═══════════════════════════════════════════════════════════ */
-        .main-container {
+        .container {
             max-width: 1400px;
             margin: 0 auto;
-            padding: 40px 30px 80px;
             position: relative;
+            z-index: 2;
         }
 
-        /* ═══════════════════════════════════════════════════════════
-           BACK BUTTON (Ghost Style)
-        ═══════════════════════════════════════════════════════════ */
         .back-btn {
-            position: fixed;
-            top: 30px;
-            left: 30px;
             display: inline-flex;
             align-items: center;
             gap: 10px;
             padding: 12px 24px;
-            background: transparent;
-            border: 1px solid rgba(255, 255, 255, 0.15);
-            border-radius: 8px;
-            color: var(--white-muted);
-            font-family: var(--font-mono);
-            font-size: 0.75rem;
-            font-weight: 500;
+            background: rgba(255, 215, 0, 0.05);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 215, 0, 0.2);
+            border-radius: 50px;
+            color: #FFD700;
+            font-size: 0.7rem;
+            font-weight: 600;
             letter-spacing: 2px;
             text-decoration: none;
             text-transform: uppercase;
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-            transition: all 0.3s var(--transition-smooth);
-            z-index: 100;
+            transition: all 0.3s ease;
+            margin-bottom: 40px;
         }
 
         .back-btn::before {
@@ -174,29 +129,40 @@
         }
 
         .back-btn:hover {
-            background: var(--white-pure);
-            border-color: var(--white-pure);
-            color: var(--void-black);
+            background: rgba(255, 215, 0, 0.1);
+            border-color: rgba(255, 215, 0, 0.4);
+            transform: translateX(-5px);
         }
 
         .back-btn:hover::before {
-            transform: translateX(-4px);
+            transform: translateX(-3px);
         }
 
-        /* ═══════════════════════════════════════════════════════════
-           HEADER SECTION
-        ═══════════════════════════════════════════════════════════ */
-        .header-section {
+        .header {
             text-align: center;
-            padding: 60px 0 80px;
+            margin-bottom: 60px;
+            position: relative;
         }
 
-        /* Crown Icon */
+        .header::before {
+            content: '';
+            position: absolute;
+            top: -40px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 250px;
+            height: 250px;
+            background: radial-gradient(circle, rgba(255, 215, 0, 0.12) 0%, transparent 70%);
+            border-radius: 50%;
+            filter: blur(60px);
+            pointer-events: none;
+        }
+
         .crown-icon {
             font-size: 3rem;
             margin-bottom: 20px;
             animation: crownFloat 3s ease-in-out infinite;
-            filter: drop-shadow(0 0 20px var(--gold-glow));
+            filter: drop-shadow(0 0 20px rgba(255, 215, 0, 0.5));
         }
 
         @keyframes crownFloat {
@@ -204,99 +170,106 @@
             50% { transform: translateY(-10px); }
         }
 
-        /* Main Title */
-        .main-title {
-            font-family: var(--font-display);
-            font-size: clamp(3rem, 10vw, 7rem);
-            font-weight: 900;
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 20px;
+            background: rgba(255, 215, 0, 0.05);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 215, 0, 0.15);
+            border-radius: 50px;
+            margin-bottom: 30px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            letter-spacing: 3px;
             text-transform: uppercase;
-            letter-spacing: 12px;
-            color: var(--gold-primary);
-            line-height: 1;
-            margin-bottom: 15px;
-            position: relative;
-            text-shadow: 
-                0 0 20px var(--gold-glow),
-                0 0 40px rgba(255, 215, 0, 0.2),
-                0 0 80px rgba(255, 215, 0, 0.1);
+            color: rgba(255, 215, 0, 0.7);
+        }
+
+        .badge::before {
+            content: '';
+            width: 6px;
+            height: 6px;
+            background: #FFD700;
+            border-radius: 50%;
+            box-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+        }
+
+        .title {
+            font-family: 'Montserrat', sans-serif;
+            font-size: clamp(2.5rem, 8vw, 5.5rem);
+            font-weight: 900;
+            letter-spacing: 10px;
+            text-transform: uppercase;
+            color: #FFD700;
+            margin-bottom: 20px;
+            background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
             animation: titleGlow 4s ease-in-out infinite;
         }
 
         @keyframes titleGlow {
             0%, 100% {
-                text-shadow: 
-                    0 0 20px var(--gold-glow),
-                    0 0 40px rgba(255, 215, 0, 0.2),
-                    0 0 80px rgba(255, 215, 0, 0.1);
+                filter: drop-shadow(0 0 20px rgba(255, 215, 0, 0.4));
             }
             50% {
-                text-shadow: 
-                    0 0 30px var(--gold-glow),
-                    0 0 60px rgba(255, 215, 0, 0.35),
-                    0 0 100px rgba(255, 215, 0, 0.2);
+                filter: drop-shadow(0 0 40px rgba(255, 215, 0, 0.6));
             }
         }
 
-        /* Subtitle */
         .subtitle {
-            font-family: var(--font-mono);
-            font-size: 0.8rem;
-            font-weight: 500;
-            letter-spacing: 8px;
+            font-size: 0.85rem;
+            color: rgba(255, 255, 255, 0.4);
+            letter-spacing: 6px;
             text-transform: uppercase;
-            color: var(--white-dim);
+            margin-bottom: 30px;
             position: relative;
             display: inline-block;
+            padding-bottom: 20px;
         }
 
         .subtitle::before,
         .subtitle::after {
             content: '◆';
-            color: var(--gold-primary);
+            color: #FFD700;
             margin: 0 15px;
             font-size: 0.5rem;
             vertical-align: middle;
         }
 
-        /* Decorative Line */
-        .header-line {
-            width: 150px;
+        .subtitle::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
             height: 1px;
-            background: linear-gradient(
-                90deg,
-                transparent,
-                var(--gold-primary),
-                transparent
-            );
-            margin: 30px auto 0;
-            opacity: 0.5;
+            background: linear-gradient(90deg, transparent, rgba(255, 215, 0, 0.4), transparent);
         }
 
-        /* ═══════════════════════════════════════════════════════════
-           VETERANS GRID
-        ═══════════════════════════════════════════════════════════ */
         .veterans-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 35px;
-            padding: 20px 0;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 30px;
+            margin-bottom: 60px;
         }
 
-        /* ═══════════════════════════════════════════════════════════
-           VETERAN CARD
-        ═══════════════════════════════════════════════════════════ */
         .veteran-card {
-            background: var(--card-bg);
-            backdrop-filter: blur(var(--blur-glass));
-            -webkit-backdrop-filter: blur(var(--blur-glass));
-            border: 1px solid var(--border-default);
-            border-radius: 16px;
+            background: rgba(255, 215, 0, 0.02);
+            backdrop-filter: blur(30px);
+            -webkit-backdrop-filter: blur(30px);
+            border: 1px solid rgba(255, 215, 0, 0.1);
+            border-radius: 20px;
             overflow: hidden;
             position: relative;
             opacity: 0;
             transform: translateY(50px);
-            will-change: transform, opacity, box-shadow;
-            transition: all 0.5s var(--transition-smooth);
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         .veteran-card.visible {
@@ -307,50 +280,55 @@
         .veteran-card::before {
             content: '';
             position: absolute;
-            inset: 0;
-            background: linear-gradient(
-                180deg,
-                transparent 0%,
-                transparent 60%,
-                rgba(0, 0, 0, 0.8) 100%
-            );
-            z-index: 1;
-            pointer-events: none;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(255, 215, 0, 0.3), transparent);
         }
 
         .veteran-card::after {
             content: '';
             position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 3px;
-            background: linear-gradient(
-                90deg,
-                transparent,
-                var(--gold-primary),
-                transparent
-            );
+            inset: 0;
+            background: radial-gradient(circle at top right, rgba(255, 215, 0, 0.05), transparent 60%);
+            pointer-events: none;
             opacity: 0;
             transition: opacity 0.4s ease;
         }
 
         .veteran-card:hover {
             transform: translateY(-12px);
-            border-color: var(--border-hover);
-            background: var(--card-bg-hover);
+            border-color: rgba(255, 215, 0, 0.3);
             box-shadow: 
-                0 25px 60px -15px rgba(255, 215, 0, 0.25),
-                0 0 40px -10px rgba(255, 215, 0, 0.15),
-                inset 0 0 60px rgba(255, 215, 0, 0.02);
+                0 30px 60px rgba(255, 215, 0, 0.15),
+                0 0 80px rgba(255, 215, 0, 0.1),
+                inset 0 0 60px rgba(255, 215, 0, 0.03);
         }
 
         .veteran-card:hover::after {
             opacity: 1;
         }
 
-        /* Card Image */
-        .card-image-container {
+        .elite-badge {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            padding: 6px 14px;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 215, 0, 0.4);
+            border-radius: 6px;
+            font-size: 0.6rem;
+            font-weight: 700;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: #FFD700;
+            z-index: 10;
+        }
+
+        .image-container {
             position: relative;
             width: 100%;
             height: 380px;
@@ -361,149 +339,106 @@
             width: 100%;
             height: 100%;
             object-fit: cover;
-            filter: grayscale(100%) contrast(1.1) brightness(0.9);
-            transform: scale(1);
-            transition: all 0.6s var(--transition-smooth);
+            filter: grayscale(100%) contrast(1.1);
+            transition: all 0.6s ease;
+        }
+
+        .image-overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(
+                180deg,
+                transparent 0%,
+                transparent 50%,
+                rgba(0, 0, 0, 0.8) 100%
+            );
+            pointer-events: none;
         }
 
         .veteran-card:hover .card-image {
-            filter: grayscale(0%) contrast(1) brightness(1);
+            filter: grayscale(0%) contrast(1);
             transform: scale(1.08);
         }
 
-        /* Elite Badge */
-        .elite-badge {
-            position: absolute;
-            top: 15px;
-            right: 15px;
-            padding: 6px 14px;
-            background: rgba(0, 0, 0, 0.7);
-            backdrop-filter: blur(10px);
-            border: 1px solid var(--gold-primary);
-            border-radius: 4px;
-            font-size: 0.55rem;
-            font-weight: 700;
-            letter-spacing: 2px;
-            text-transform: uppercase;
-            color: var(--gold-primary);
-            z-index: 2;
-        }
-
-        /* Card Content */
         .card-content {
-            position: relative;
-            z-index: 2;
             padding: 25px;
+            position: relative;
             background: linear-gradient(
                 180deg,
                 transparent,
                 rgba(10, 10, 10, 0.95) 30%
             );
             margin-top: -80px;
+            z-index: 2;
         }
 
-        /* Veteran Name */
         .veteran-name {
-            font-family: var(--font-display);
+            font-family: 'Montserrat', sans-serif;
             font-size: 1.4rem;
             font-weight: 800;
-            text-transform: uppercase;
             letter-spacing: 3px;
-            color: var(--white-pure);
-            margin-bottom: 12px;
+            text-transform: uppercase;
+            color: #ffffff;
+            margin-bottom: 15px;
             transition: all 0.3s ease;
         }
 
         .veteran-card:hover .veteran-name {
-            color: var(--gold-primary);
-            text-shadow: 0 0 20px var(--gold-glow);
+            color: #FFD700;
+            filter: drop-shadow(0 0 20px rgba(255, 215, 0, 0.5));
         }
 
-        /* Rank */
         .veteran-rank {
-            font-family: var(--font-mono);
-            font-size: 0.7rem;
+            font-size: 0.75rem;
             font-weight: 500;
             letter-spacing: 1px;
-            text-transform: uppercase;
-            color: var(--gold-primary);
-            padding-top: 12px;
-            border-top: 1px solid rgba(255, 215, 0, 0.2);
+            color: rgba(255, 215, 0, 0.8);
+            padding-top: 15px;
+            border-top: 1px solid rgba(255, 215, 0, 0.15);
             line-height: 1.6;
         }
 
-        /* Staggered Animation Delays */
-        .veteran-card:nth-child(1) { transition-delay: 0.1s; }
-        .veteran-card:nth-child(2) { transition-delay: 0.2s; }
-        .veteran-card:nth-child(3) { transition-delay: 0.3s; }
-        .veteran-card:nth-child(4) { transition-delay: 0.4s; }
-        .veteran-card:nth-child(5) { transition-delay: 0.5s; }
-        .veteran-card:nth-child(6) { transition-delay: 0.6s; }
-        .veteran-card:nth-child(7) { transition-delay: 0.7s; }
-
-        /* ═══════════════════════════════════════════════════════════
-           FOOTER
-        ═══════════════════════════════════════════════════════════ */
         .footer {
             text-align: center;
-            padding: 60px 0 20px;
-            border-top: 1px solid rgba(255, 215, 0, 0.1);
-            margin-top: 60px;
+            padding: 40px 0;
+            margin-top: 40px;
+            position: relative;
+        }
+
+        .footer::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 200px;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(255, 215, 0, 0.2), transparent);
         }
 
         .footer-text {
-            font-size: 0.65rem;
-            font-weight: 500;
+            color: rgba(255, 255, 255, 0.3);
+            font-size: 0.7rem;
             letter-spacing: 3px;
             text-transform: uppercase;
-            color: var(--white-dim);
+            margin-top: 30px;
         }
 
         .footer-text span {
-            color: var(--gold-primary);
+            color: #FFD700;
         }
 
-        /* ═══════════════════════════════════════════════════════════
-           RESPONSIVE
-        ═══════════════════════════════════════════════════════════ */
         @media (max-width: 768px) {
-            .main-container {
-                padding: 30px 16px 60px;
-            }
-
-            .back-btn {
-                position: relative;
-                top: auto;
-                left: auto;
-                margin-bottom: 20px;
-            }
-
-            .header-section {
-                padding: 30px 0 50px;
-            }
-
-            .main-title {
-                letter-spacing: 6px;
-            }
-
             .veterans-grid {
                 grid-template-columns: 1fr;
-                gap: 25px;
             }
 
-            .card-image-container {
+            .image-container {
                 height: 320px;
             }
 
             .veteran-name {
                 font-size: 1.2rem;
-            }
-        }
-
-        @media (max-width: 480px) {
-            .subtitle::before,
-            .subtitle::after {
-                display: none;
             }
 
             .crown-icon {
@@ -511,15 +446,12 @@
             }
         }
 
-        /* ═══════════════════════════════════════════════════════════
-           SCROLLBAR
-        ═══════════════════════════════════════════════════════════ */
         ::-webkit-scrollbar {
             width: 8px;
         }
 
         ::-webkit-scrollbar-track {
-            background: var(--void-black);
+            background: #000000;
         }
 
         ::-webkit-scrollbar-thumb {
@@ -531,56 +463,41 @@
             background: rgba(255, 215, 0, 0.4);
         }
 
-        /* ═══════════════════════════════════════════════════════════
-           SELECTION
-        ═══════════════════════════════════════════════════════════ */
         ::selection {
-            background: var(--gold-primary);
-            color: var(--void-black);
+            background: #FFD700;
+            color: #000000;
         }
     </style>
 </head>
 <body>
-
-    <!-- Background Effects -->
-    <div class="bg-effects">
-        <div class="gold-dust"></div>
-        <div class="particles">
-            <div class="particle"></div>
-            <div class="particle"></div>
-            <div class="particle"></div>
-            <div class="particle"></div>
-            <div class="particle"></div>
-            <div class="particle"></div>
-            <div class="particle"></div>
-            <div class="particle"></div>
-        </div>
-        <div class="noise"></div>
-        <div class="vignette"></div>
+    <div class="gold-glow"></div>
+    <div class="particles">
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
     </div>
 
-    <!-- Main Container -->
-    <div class="main-container">
+    <div class="container">
+        <a href="/" class="back-btn">Назад</a>
 
-        <!-- Back Button -->
-        <a href="/" class="back-btn">НАЗАД</a>
+        <div class="header">
+            <div class="crown-icon">👑</div>
+            <div class="badge">
+                Зал ZOV
+            </div>
+            <h1 class="title">ВЕТЕРАНЫ</h1>
+            <p class="subtitle">Онли Сигмы</p>
+        </div>
 
-        <!-- Header Section -->
-        <header class="header-section">
-            <div class="crown-icon"></div>
-            <h1 class="main-title">ВЕТЕРАНЫ</h1>
-            <p class="subtitle">ОНЛИ СИГМЫ</p>
-            <div class="header-line"></div>
-        </header>
-
-        <!-- Veterans Grid -->
         <div class="veterans-grid">
-
-            <!-- Card 1: 5425й -->
             <div class="veteran-card">
-                <span class="elite-badge">prime</span>
-                <div class="card-image-container">
+                <span class="elite-badge">PRIME</span>
+                <div class="image-container">
                     <img class="card-image" src="https://i.redd.it/why-minos-primes-head-like-french-fries-v0-iycizqovo8eb1.png?width=1080&format=png&auto=webp&s=8d56e8bd29533f26a0f0dbc21bca98ef6a1c95c0" alt="5425й">
+                    <div class="image-overlay"></div>
                 </div>
                 <div class="card-content">
                     <h2 class="veteran-name">5425й</h2>
@@ -588,11 +505,11 @@
                 </div>
             </div>
 
-            <!-- Card 2: Сатор -->
             <div class="veteran-card">
-                <span class="elite-badge">ebal</span>
-                <div class="card-image-container">
+                <span class="elite-badge">EBAL</span>
+                <div class="image-container">
                     <img class="card-image" src="https://i.redd.it/gdvvduwlgcic1.jpeg" alt="Сатор">
+                    <div class="image-overlay"></div>
                 </div>
                 <div class="card-content">
                     <h2 class="veteran-name">Сатор</h2>
@@ -600,11 +517,11 @@
                 </div>
             </div>
 
-            <!-- Card 3: wster -->
             <div class="veteran-card">
-                <span class="elite-badge">krutoi</span>
-                <div class="card-image-container">
+                <span class="elite-badge">KRUTOI</span>
+                <div class="image-container">
                     <img class="card-image" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQG2MPAuut5z7Ym7Gpm_-hg8DblPwVJSpjxRg&s" alt="wster">
+                    <div class="image-overlay"></div>
                 </div>
                 <div class="card-content">
                     <h2 class="veteran-name">wster</h2>
@@ -612,11 +529,11 @@
                 </div>
             </div>
 
-            <!-- Card 4: тигр -->
             <div class="veteran-card">
-                <span class="elite-badge">milfa</span>
-                <div class="card-image-container">
+                <span class="elite-badge">MILFA</span>
+                <div class="image-container">
                     <img class="card-image" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRm18N6wHjHrULRF2dV1hfgJ_AovFQuus3Y1w&s" alt="тигр">
+                    <div class="image-overlay"></div>
                 </div>
                 <div class="card-content">
                     <h2 class="veteran-name">тигр</h2>
@@ -624,11 +541,11 @@
                 </div>
             </div>
 
-            <!-- Card 5: АБЛАМБЛУМГАМ -->
             <div class="veteran-card">
-                <span class="elite-badge">marmok</span>
-                <div class="card-image-container">
+                <span class="elite-badge">MARMOK</span>
+                <div class="image-container">
                     <img class="card-image" src="https://i.ibb.co/rKjT28Vz/photo-2024-06-25-01-07-47.jpg" alt="АБЛАМБЛУМГАМ">
+                    <div class="image-overlay"></div>
                 </div>
                 <div class="card-content">
                     <h2 class="veteran-name">АБЛАМБЛУМГАМ</h2>
@@ -636,11 +553,11 @@
                 </div>
             </div>
 
-            <!-- Card 6: рамлюк -->
             <div class="veteran-card">
-                <span class="elite-badge">potuzhnost</span>
-                <div class="card-image-container">
+                <span class="elite-badge">POTUZHNOST</span>
+                <div class="image-container">
                     <img class="card-image" src="https://i.pinimg.com/736x/72/5d/3d/725d3d735074a37c5e8d50180541c374.jpg" alt="рамлюк">
+                    <div class="image-overlay"></div>
                 </div>
                 <div class="card-content">
                     <h2 class="veteran-name">рамлюк</h2>
@@ -648,83 +565,54 @@
                 </div>
             </div>
 
-            <!-- Card 7: мрфиш -->
             <div class="veteran-card">
-                <span class="elite-badge">pizdatiy</span>
-                <div class="card-image-container">
+                <span class="elite-badge">PIZDATIY</span>
+                <div class="image-container">
                     <img class="card-image" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRaxyIrr5YF1VF-GHp-t32ZyQdMpSbd5v6gHg&s" alt="мрфиш">
+                    <div class="image-overlay"></div>
                 </div>
                 <div class="card-content">
                     <h2 class="veteran-name">мрфиш</h2>
                     <p class="veteran-rank">самый первый основатель ССО, он крут</p>
                 </div>
             </div>
-
         </div>
 
-        <!-- Footer -->
-        <footer class="footer">
+        <div class="footer">
             <p class="footer-text">
                 <span>◆</span> HALL OF FAME <span>◆</span> ССО "ЧУРКА" <span>◆</span>
             </p>
-        </footer>
-
+        </div>
     </div>
 
     <script>
-        // ═══════════════════════════════════════════════════════════
-        // STAGGERED CARD ENTRANCE ANIMATION
-        // ═══════════════════════════════════════════════════════════
         document.addEventListener('DOMContentLoaded', () => {
             const cards = document.querySelectorAll('.veteran-card');
             
-            const observerOptions = {
-                root: null,
-                rootMargin: '0px',
-                threshold: 0.1
-            };
-
             const observer = new IntersectionObserver((entries) => {
                 entries.forEach((entry, index) => {
                     if (entry.isIntersecting) {
-                        // Add staggered delay based on card index
                         setTimeout(() => {
                             entry.target.classList.add('visible');
                         }, index * 100);
                         observer.unobserve(entry.target);
                     }
                 });
-            }, observerOptions);
+            }, { threshold: 0.1 });
 
-            // Start observing after a short delay for initial page load
             setTimeout(() => {
-                cards.forEach(card => {
-                    observer.observe(card);
-                });
+                cards.forEach(card => observer.observe(card));
             }, 300);
         });
 
-        // ═══════════════════════════════════════════════════════════
-        // PARALLAX EFFECT ON GOLD DUST (Subtle)
-        // ═══════════════════════════════════════════════════════════
-        const goldDust = document.querySelector('.gold-dust');
-
+        const goldGlow = document.querySelector('.gold-glow');
         document.addEventListener('mousemove', (e) => {
             const x = (e.clientX / window.innerWidth - 0.5) * 20;
             const y = (e.clientY / window.innerHeight - 0.5) * 20;
-            
-            if (goldDust) {
-                goldDust.style.transform = `translate(${x}px, ${y}px)`;
+            if (goldGlow) {
+                goldGlow.style.transform = `translate(${x}px, ${y}px)`;
             }
         });
-
-        // ═══════════════════════════════════════════════════════════
-        // CONSOLE EASTER EGG
-        // ═══════════════════════════════════════════════════════════
-        console.log('%cPOSMOTRITE NA MENA', 'color: #FFD700; font-size: 20px; font-weight: bold;');
-        console.log('%OCHEVIDNO STAT MOYA', 'color: #888; font-size: 12px;');
-        console.log('ZOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOV" ZV', 'color: #666; font-size: 10px;');
     </script>
-
 </body>
 </html>
