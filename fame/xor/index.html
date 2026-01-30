@@ -1,0 +1,884 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="SSO CHURKA - Hall of Fame. Veterans of the Organization.">
+    <title>ВЕТЕРАНЫ | SSO CHURKA</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Montserrat:wght@600;700;800;900&display=swap"
+        rel="stylesheet">
+    <style>
+        *,
+        *::before,
+        *::after {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --black: #000000;
+            --white: #ffffff;
+            --gray-100: #f0f0f0;
+            --gray-200: #c8c8c8;
+            --gray-300: #a0a0a0;
+            --gray-400: #787878;
+            --gray-500: #505050;
+            --gray-600: #383838;
+            --gray-700: #282828;
+            --gray-800: #181818;
+            --gray-900: #0a0a0a;
+            --font-mono: 'JetBrains Mono', monospace;
+            --font-display: 'Montserrat', sans-serif;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: var(--font-mono);
+            background: var(--black);
+            color: var(--white);
+            min-height: 100vh;
+            padding: 40px 20px;
+            position: relative;
+            overflow-x: hidden;
+            cursor: crosshair;
+        }
+
+        #schematic-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: 0;
+            opacity: 0.06;
+            pointer-events: none;
+        }
+
+        .scanlines {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: repeating-linear-gradient(0deg,
+                    transparent,
+                    transparent 2px,
+                    rgba(0, 0, 0, 0.15) 2px,
+                    rgba(0, 0, 0, 0.15) 4px);
+            pointer-events: none;
+            z-index: 1000;
+        }
+
+        .vignette {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(ellipse at center, transparent 40%, rgba(0, 0, 0, 0.85) 100%);
+            pointer-events: none;
+            z-index: 999;
+        }
+
+        .lang-switcher {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1001;
+            display: flex;
+            gap: 5px;
+        }
+
+        .lang-btn {
+            background: transparent;
+            border: 1px solid var(--gray-600);
+            color: var(--gray-400);
+            padding: 8px 14px;
+            font-family: var(--font-mono);
+            font-size: 0.75rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-transform: uppercase;
+        }
+
+        .lang-btn:hover {
+            border-color: var(--gray-400);
+            color: var(--white);
+        }
+
+        .lang-btn.active {
+            background: var(--white);
+            color: var(--black);
+            border-color: var(--white);
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 10;
+        }
+
+        .back-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 24px;
+            background: transparent;
+            border: 1px solid var(--gray-600);
+            color: var(--gray-300);
+            font-family: var(--font-mono);
+            font-size: 0.7rem;
+            font-weight: 600;
+            letter-spacing: 2px;
+            text-decoration: none;
+            text-transform: uppercase;
+            transition: all 0.3s ease;
+            margin-bottom: 40px;
+        }
+
+        .back-btn::before {
+            content: '←';
+            font-size: 1rem;
+            transition: transform 0.3s ease;
+        }
+
+        .back-btn:hover {
+            background: var(--white);
+            color: var(--black);
+            border-color: var(--white);
+            transform: translateX(-5px);
+        }
+
+        .back-btn:hover::before {
+            transform: translateX(-3px);
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 60px;
+            position: relative;
+        }
+
+        .crown-icon {
+            width: 60px;
+            height: 60px;
+            margin: 0 auto 20px;
+            opacity: 0.9;
+        }
+
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 20px;
+            background: transparent;
+            border: 1px solid var(--gray-700);
+            margin-bottom: 30px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            color: var(--gray-400);
+        }
+
+        .badge::before {
+            content: '';
+            width: 6px;
+            height: 6px;
+            background: var(--white);
+            animation: pulse 1.5s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: 0.3;
+            }
+        }
+
+        .title {
+            font-family: var(--font-display);
+            font-size: clamp(3rem, 10vw, 7rem);
+            font-weight: 900;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: var(--white);
+            margin-bottom: 20px;
+            line-height: 0.9;
+        }
+
+        .glitch-text {
+            position: relative;
+            display: inline-block;
+        }
+
+        .glitch-text::before,
+        .glitch-text::after {
+            content: attr(data-text);
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+
+        .glitch-text::before {
+            animation: glitch-1 0.3s infinite linear alternate-reverse;
+            clip-path: polygon(0 0, 100% 0, 100% 35%, 0 35%);
+            color: var(--white);
+        }
+
+        .glitch-text::after {
+            animation: glitch-2 0.3s infinite linear alternate-reverse;
+            clip-path: polygon(0 65%, 100% 65%, 100% 100%, 0 100%);
+            color: var(--gray-300);
+        }
+
+        @keyframes glitch-1 {
+            0% {
+                transform: translateX(0);
+            }
+
+            20% {
+                transform: translateX(-2px);
+            }
+
+            40% {
+                transform: translateX(2px);
+            }
+
+            60% {
+                transform: translateX(-1px);
+            }
+
+            80% {
+                transform: translateX(1px);
+            }
+
+            100% {
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes glitch-2 {
+            0% {
+                transform: translateX(0);
+            }
+
+            20% {
+                transform: translateX(2px);
+            }
+
+            40% {
+                transform: translateX(-2px);
+            }
+
+            60% {
+                transform: translateX(1px);
+            }
+
+            80% {
+                transform: translateX(-1px);
+            }
+
+            100% {
+                transform: translateX(0);
+            }
+        }
+
+        .subtitle {
+            font-size: 0.85rem;
+            color: var(--gray-500);
+            letter-spacing: 6px;
+            text-transform: uppercase;
+            margin-bottom: 30px;
+            position: relative;
+            display: inline-block;
+            padding-bottom: 20px;
+        }
+
+        .subtitle::before,
+        .subtitle::after {
+            content: '◆';
+            color: var(--gray-600);
+            margin: 0 15px;
+            font-size: 0.5rem;
+            vertical-align: middle;
+        }
+
+        .veterans-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 25px;
+            margin-bottom: 60px;
+        }
+
+        .veteran-card {
+            background: var(--gray-900);
+            border: 1px solid var(--gray-700);
+            overflow: hidden;
+            position: relative;
+            opacity: 0;
+            transform: translateY(50px);
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .veteran-card.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .veteran-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--gray-500), transparent);
+        }
+
+        .veteran-card:hover {
+            transform: translateY(-8px);
+            border-color: var(--gray-400);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+        }
+
+        .elite-badge {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            padding: 6px 12px;
+            background: var(--black);
+            border: 1px solid var(--gray-500);
+            font-size: 0.6rem;
+            font-weight: 700;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: var(--white);
+            z-index: 10;
+        }
+
+        .image-container {
+            position: relative;
+            width: 100%;
+            height: 350px;
+            overflow: hidden;
+        }
+
+        .card-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            filter: grayscale(100%) contrast(1.2);
+            transition: all 0.5s ease;
+        }
+
+        .image-overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(180deg, transparent 0%, transparent 50%, var(--black) 100%);
+            pointer-events: none;
+        }
+
+        .veteran-card:hover .card-image {
+            filter: grayscale(50%) contrast(1.1);
+            transform: scale(1.05);
+        }
+
+        .card-content {
+            padding: 25px;
+            position: relative;
+            background: var(--black);
+            margin-top: -60px;
+            z-index: 2;
+        }
+
+        .veteran-name {
+            font-family: var(--font-display);
+            font-size: 1.3rem;
+            font-weight: 900;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            color: var(--white);
+            margin-bottom: 12px;
+            transition: all 0.3s ease;
+        }
+
+        .veteran-card:hover .veteran-name {
+            letter-spacing: 5px;
+        }
+
+        .veteran-rank {
+            font-size: 0.75rem;
+            font-weight: 500;
+            letter-spacing: 1px;
+            color: var(--gray-400);
+            padding-top: 12px;
+            border-top: 1px solid var(--gray-700);
+            line-height: 1.6;
+        }
+
+        .footer {
+            text-align: center;
+            padding: 40px 0;
+            margin-top: 40px;
+            position: relative;
+            border-top: 1px solid var(--gray-800);
+        }
+
+        .footer-text {
+            color: var(--gray-600);
+            font-size: 0.7rem;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+        }
+
+        .footer-text span {
+            color: var(--gray-500);
+        }
+
+        [data-lang] {
+            display: none;
+        }
+
+        [data-lang="ru"] {
+            display: block;
+        }
+
+        .badge [data-lang="ru"],
+        .subtitle [data-lang="ru"],
+        .back-btn [data-lang="ru"] {
+            display: inline;
+        }
+
+        body.lang-en [data-lang="ru"] {
+            display: none;
+        }
+
+        body.lang-en [data-lang="en"] {
+            display: block;
+        }
+
+        body.lang-en .badge [data-lang="en"],
+        body.lang-en .subtitle [data-lang="en"],
+        body.lang-en .back-btn [data-lang="en"] {
+            display: inline;
+        }
+
+        @media (max-width: 768px) {
+            .veterans-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .image-container {
+                height: 300px;
+            }
+
+            .veteran-name {
+                font-size: 1.1rem;
+            }
+
+            .lang-switcher {
+                top: 10px;
+                right: 10px;
+            }
+
+            .lang-btn {
+                padding: 6px 10px;
+                font-size: 0.7rem;
+            }
+        }
+
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--black);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--gray-700);
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--gray-500);
+        }
+
+        ::selection {
+            background: var(--white);
+            color: var(--black);
+        }
+    </style>
+</head>
+
+<body>
+    <canvas id="schematic-canvas"></canvas>
+    <div class="scanlines"></div>
+    <div class="vignette"></div>
+
+    <div class="lang-switcher">
+        <button class="lang-btn" data-setlang="en">EN</button>
+        <button class="lang-btn active" data-setlang="ru">RU</button>
+    </div>
+
+    <div class="container">
+        <a href="/" class="back-btn">
+            <span data-lang="ru">Назад</span>
+            <span data-lang="en">Back</span>
+        </a>
+
+        <div class="header">
+            <svg class="crown-icon" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M8 48h48v8H8z" />
+                <path d="M8 48L16 20l12 16 8-20 8 20 12-16v28" />
+                <circle cx="16" cy="18" r="3" />
+                <circle cx="36" cy="14" r="3" />
+                <circle cx="48" cy="18" r="3" />
+            </svg>
+            <div class="badge">
+                <span data-lang="ru">Зал ZOV</span>
+                <span data-lang="en">Hall of ZOV</span>
+            </div>
+            <h1 class="title">
+                <span class="glitch-text" data-text="ВЕТЕРАНЫ">
+                    <span data-lang="ru">ВЕТЕРАНЫ</span>
+                    <span data-lang="en">VETERANS</span>
+                </span>
+            </h1>
+            <p class="subtitle">
+                <span data-lang="ru">Онли Сигмы</span>
+                <span data-lang="en">Only Sigmas</span>
+            </p>
+        </div>
+
+        <div class="veterans-grid">
+            <div class="veteran-card">
+                <span class="elite-badge">PRIME</span>
+                <div class="image-container">
+                    <img class="card-image"
+                        src="https://i.redd.it/why-minos-primes-head-like-french-fries-v0-iycizqovo8eb1.png?width=1080&format=png&auto=webp&s=8d56e8bd29533f26a0f0dbc21bca98ef6a1c95c0"
+                        alt="5425й">
+                    <div class="image-overlay"></div>
+                </div>
+                <div class="card-content">
+                    <h2 class="veteran-name">5425й</h2>
+                    <p class="veteran-rank">
+                        <span data-lang="ru">Я, Крутой</span>
+                        <span data-lang="en">Me, The Cool One</span>
+                    </p>
+                </div>
+            </div>
+
+            <div class="veteran-card">
+                <span class="elite-badge">EBAL</span>
+                <div class="image-container">
+                    <img class="card-image" src="https://i.redd.it/gdvvduwlgcic1.jpeg" alt="Сатор">
+                    <div class="image-overlay"></div>
+                </div>
+                <div class="card-content">
+                    <h2 class="veteran-name">
+                        <span data-lang="ru">Сатор</span>
+                        <span data-lang="en">Sator</span>
+                    </h2>
+                    <p class="veteran-rank">
+                        <span data-lang="ru">мясо для ебли, батя</span>
+                        <span data-lang="en">meat for action, boss</span>
+                    </p>
+                </div>
+            </div>
+
+            <div class="veteran-card">
+                <span class="elite-badge">KRUTOI</span>
+                <div class="image-container">
+                    <img class="card-image"
+                        src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQG2MPAuut5z7Ym7Gpm_-hg8DblPwVJSpjxRg&s"
+                        alt="wster">
+                    <div class="image-overlay"></div>
+                </div>
+                <div class="card-content">
+                    <h2 class="veteran-name">wster</h2>
+                    <p class="veteran-rank">
+                        <span data-lang="ru">Ветеран 2й войны ССО, адвокат ССО</span>
+                        <span data-lang="en">SSO 2nd War Veteran, SSO Lawyer</span>
+                    </p>
+                </div>
+            </div>
+
+            <div class="veteran-card">
+                <span class="elite-badge">MILFA</span>
+                <div class="image-container">
+                    <img class="card-image"
+                        src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRm18N6wHjHrULRF2dV1hfgJ_AovFQuus3Y1w&s"
+                        alt="тигр">
+                    <div class="image-overlay"></div>
+                </div>
+                <div class="card-content">
+                    <h2 class="veteran-name">
+                        <span data-lang="ru">тигр</span>
+                        <span data-lang="en">tigr</span>
+                    </h2>
+                    <p class="veteran-rank">
+                        <span data-lang="ru">Ветеран 2й войны ССО, проводник электрик</span>
+                        <span data-lang="en">SSO 2nd War Veteran, Electrical Conductor</span>
+                    </p>
+                </div>
+            </div>
+
+            <div class="veteran-card">
+                <span class="elite-badge">MARMOK</span>
+                <div class="image-container">
+                    <img class="card-image" src="https://i.ibb.co/rKjT28Vz/photo-2024-06-25-01-07-47.jpg"
+                        alt="АБЛАМБЛУМГАМ">
+                    <div class="image-overlay"></div>
+                </div>
+                <div class="card-content">
+                    <h2 class="veteran-name">АБЛАМБЛУМГАМ</h2>
+                    <p class="veteran-rank">
+                        <span data-lang="ru">НАСТОЯЩИЙ МАРМОК, SIGMA ZZZ</span>
+                        <span data-lang="en">THE REAL MARMOK, SIGMA ZZZ</span>
+                    </p>
+                </div>
+            </div>
+
+            <div class="veteran-card">
+                <span class="elite-badge">POTUZHNOST</span>
+                <div class="image-container">
+                    <img class="card-image"
+                        src="https://i.pinimg.com/736x/72/5d/3d/725d3d735074a37c5e8d50180541c374.jpg" alt="рамлюк">
+                    <div class="image-overlay"></div>
+                </div>
+                <div class="card-content">
+                    <h2 class="veteran-name">
+                        <span data-lang="ru">рамлюк</span>
+                        <span data-lang="en">ramlyuk</span>
+                    </h2>
+                    <p class="veteran-rank">
+                        <span data-lang="ru">Ветеран СВО, признанный электрик проводник</span>
+                        <span data-lang="en">SVO Veteran, Certified Electrical Conductor</span>
+                    </p>
+                </div>
+            </div>
+
+            <div class="veteran-card">
+                <span class="elite-badge">PIZDATIY</span>
+                <div class="image-container">
+                    <img class="card-image"
+                        src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRaxyIrr5YF1VF-GHp-t32ZyQdMpSbd5v6gHg&s"
+                        alt="мрфиш">
+                    <div class="image-overlay"></div>
+                </div>
+                <div class="card-content">
+                    <h2 class="veteran-name">
+                        <span data-lang="ru">мрфиш</span>
+                        <span data-lang="en">mrfish</span>
+                    </h2>
+                    <p class="veteran-rank">
+                        <span data-lang="ru">самый первый основатель ССО, он крут</span>
+                        <span data-lang="en">The very first SSO founder, he's cool</span>
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p class="footer-text">
+                <span>◆</span> HALL OF FAME <span>◆</span> ССО "ЧУРКА" <span>◆</span>
+            </p>
+        </div>
+    </div>
+
+    <script>
+        (function () {
+            const canvas = document.getElementById('schematic-canvas');
+            const ctx = canvas.getContext('2d');
+            let width, height;
+            let scrollOffset = 0;
+            const scrollSpeed = 0.4;
+            const schematicElements = [];
+            const elementCount = 35;
+
+            function resize() {
+                width = canvas.width = window.innerWidth;
+                height = canvas.height = window.innerHeight;
+                generateelements();
+            }
+
+            function generateelements() {
+                schematicElements.length = 0;
+                for (let i = 0; i < elementCount; i++) {
+                    schematicElements.push({
+                        x: Math.random() * width,
+                        y: Math.random() * height * 3 - height,
+                        type: Math.floor(Math.random() * 6),
+                        size: 25 + Math.random() * 60,
+                        rotation: Math.random() * Math.PI * 2
+                    });
+                }
+            }
+
+            function drawcircuitnode(x, y, size) {
+                ctx.beginPath();
+                ctx.arc(x, y, size * 0.1, 0, Math.PI * 2);
+                ctx.stroke();
+                ctx.beginPath();
+                ctx.arc(x, y, size * 0.05, 0, Math.PI * 2);
+                ctx.fill();
+            }
+
+            function drawschematic(elem, yOffset) {
+                const x = elem.x;
+                const y = (elem.y + yOffset) % (height * 2) - height * 0.5;
+                const size = elem.size;
+
+                ctx.save();
+                ctx.translate(x, y);
+                ctx.rotate(elem.rotation);
+                ctx.strokeStyle = 'rgba(255, 255, 255, 0.5)';
+                ctx.fillStyle = 'rgba(255, 255, 255, 0.5)';
+                ctx.lineWidth = 1;
+
+                switch (elem.type) {
+                    case 0:
+                        ctx.strokeRect(-size / 2, -size / 2, size, size);
+                        ctx.beginPath();
+                        ctx.moveTo(-size / 2, 0);
+                        ctx.lineTo(size / 2, 0);
+                        ctx.moveTo(0, -size / 2);
+                        ctx.lineTo(0, size / 2);
+                        ctx.stroke();
+                        drawcircuitnode(0, 0, size);
+                        break;
+                    case 1:
+                        ctx.beginPath();
+                        ctx.arc(0, 0, size / 2, 0, Math.PI * 2);
+                        ctx.stroke();
+                        ctx.beginPath();
+                        ctx.arc(0, 0, size / 4, 0, Math.PI * 2);
+                        ctx.stroke();
+                        for (let i = 0; i < 8; i++) {
+                            const angle = (i / 8) * Math.PI * 2;
+                            ctx.beginPath();
+                            ctx.moveTo(Math.cos(angle) * size / 4, Math.sin(angle) * size / 4);
+                            ctx.lineTo(Math.cos(angle) * size / 2, Math.sin(angle) * size / 2);
+                            ctx.stroke();
+                        }
+                        break;
+                    case 2:
+                        ctx.beginPath();
+                        ctx.moveTo(0, -size / 2);
+                        ctx.lineTo(size / 2, size / 2);
+                        ctx.lineTo(-size / 2, size / 2);
+                        ctx.closePath();
+                        ctx.stroke();
+                        break;
+                    case 3:
+                        for (let i = 0; i < 3; i++) {
+                            ctx.strokeRect(-size / 2 + i * 8, -size / 4 + i * 4, size - i * 16, size / 2 - i * 8);
+                        }
+                        break;
+                    case 4:
+                        const teeth = 10;
+                        ctx.beginPath();
+                        for (let i = 0; i < teeth; i++) {
+                            const a1 = (i / teeth) * Math.PI * 2;
+                            const a2 = ((i + 0.5) / teeth) * Math.PI * 2;
+                            ctx.lineTo(Math.cos(a1) * size / 2, Math.sin(a1) * size / 2);
+                            ctx.lineTo(Math.cos(a2) * (size / 2 - 6), Math.sin(a2) * (size / 2 - 6));
+                        }
+                        ctx.closePath();
+                        ctx.stroke();
+                        break;
+                    case 5:
+                        ctx.beginPath();
+                        ctx.moveTo(-size / 2, -size / 4);
+                        ctx.lineTo(-size / 4, -size / 4);
+                        ctx.lineTo(-size / 4, -size / 2);
+                        ctx.lineTo(size / 4, -size / 2);
+                        ctx.lineTo(size / 4, -size / 4);
+                        ctx.lineTo(size / 2, -size / 4);
+                        ctx.lineTo(size / 2, size / 4);
+                        ctx.lineTo(size / 4, size / 4);
+                        ctx.lineTo(size / 4, size / 2);
+                        ctx.lineTo(-size / 4, size / 2);
+                        ctx.lineTo(-size / 4, size / 4);
+                        ctx.lineTo(-size / 2, size / 4);
+                        ctx.closePath();
+                        ctx.stroke();
+                        break;
+                }
+                ctx.restore();
+            }
+
+            function render() {
+                ctx.clearRect(0, 0, width, height);
+                scrollOffset += scrollSpeed;
+                for (const elem of schematicElements) {
+                    drawschematic(elem, scrollOffset);
+                }
+                requestAnimationFrame(render);
+            }
+
+            window.addEventListener('resize', resize);
+            resize();
+            render();
+
+            const cards = document.querySelectorAll('.veteran-card');
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach((entry, index) => {
+                    if (entry.isIntersecting) {
+                        setTimeout(() => {
+                            entry.target.classList.add('visible');
+                        }, index * 80);
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, { threshold: 0.1 });
+
+            setTimeout(() => {
+                cards.forEach(card => observer.observe(card));
+            }, 200);
+
+            const langBtns = document.querySelectorAll('[data-setlang]');
+            langBtns.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const lang = btn.getAttribute('data-setlang');
+                    document.body.classList.remove('lang-en');
+                    if (lang === 'en') {
+                        document.body.classList.add('lang-en');
+                    }
+                    langBtns.forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    localStorage.setItem('sso-lang', lang);
+                });
+            });
+
+            const savedLang = localStorage.getItem('sso-lang');
+            if (savedLang === 'en') {
+                document.body.classList.add('lang-en');
+                langBtns.forEach(b => {
+                    b.classList.remove('active');
+                    if (b.getAttribute('data-setlang') === 'en') b.classList.add('active');
+                });
+            }
+        })();
+    </script>
+</body>
+
+</html>
